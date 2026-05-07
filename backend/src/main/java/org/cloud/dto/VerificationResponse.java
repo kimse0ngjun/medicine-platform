@@ -7,5 +7,5 @@ import lombok.Setter;
 public class VerificationResponse {
 	private Long Id;
 	private String status;
-	private String result;
+	private RecallResultResponse recallResult;
 }
