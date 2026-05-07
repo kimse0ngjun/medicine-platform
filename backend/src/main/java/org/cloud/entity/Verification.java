@@ -1,9 +1,11 @@
 package org.cloud.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.cloud.enums.VerificationStatus;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,7 +22,8 @@ public class Verification {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private VerificationStatus status;
 	
 	@Lob
 	private String inputText;

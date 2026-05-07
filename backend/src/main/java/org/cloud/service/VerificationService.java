@@ -4,6 +4,7 @@ import org.cloud.dto.RecallResultResponse;
 import org.cloud.dto.VerificationRequest;
 import org.cloud.dto.VerificationResponse;
 import org.cloud.entity.Verification;
+import org.cloud.enums.VerificationStatus;
 import org.cloud.repository.VerificationRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -14,15 +15,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class VerificationService {
 
-    private final MedicineProjectApplication medicineProjectApplication;
-
     private final VerificationRepository repository;
     private final RecallService recallService;
 
     public Long start(VerificationRequest req) {
 
         Verification v = new Verification();
-        v.setStatus("PENDING");
+        v.setStatus(VerificationStatus.PENDING);
         v.setInputText(req.getInputText());
         v.setLotNumber(req.getLotNumber());
 
@@ -38,20 +37,20 @@ public class VerificationService {
 
         Verification v = repository.findById(id).orElseThrow();
 
-        v.setStatus("PROCESSING");
+        v.setStatus(VerificationStatus.PROCESSING);
         repository.save(v);
 
         try {
         	RecallResultResponse result = recallService.checkRecall(req.getLotNumber());
 
 
-            v.setStatus(result.getStatus());
+        	v.setStatus(VerificationStatus.SUCCESS);
             v.setResult(result.getMessage());
 
             repository.save(v);
 
         } catch (Exception e) {
-            v.setStatus("FAIL");
+            v.setStatus(VerificationStatus.FAIL);
             v.setResult(e.getMessage());
             repository.save(v);
         }

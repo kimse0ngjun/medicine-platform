@@ -2,7 +2,11 @@ package org.cloud.entity;
 
 import java.time.LocalDate;
 
+import org.cloud.enums.DangerLevel;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,7 +27,8 @@ public class RecallBatch {
 	
 	private String lotNumber;
 	
-	private Integer dangerLevel;
+	@Enumerated(EnumType.STRING)
+	private DangerLevel dangerLevel;
 	
 	@Lob
 	private String recallReason;
