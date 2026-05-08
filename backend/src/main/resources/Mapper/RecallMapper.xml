@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<select id="findRecallReason" resultType="string">
+    SELECT recall_reason
+    FROM recall_batch
+    WHERE lot_number = #{lotNumber}
+</select>
