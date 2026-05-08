@@ -1,0 +1,51 @@
+.title {
+  font-family: var(--heading);
+  font-weight: 500;
+  color: #16171d;
+}
+
+.page {
+  padding: 30px;
+  min-height: 100vh;
+  transition: 0.3s;
+}
+
+.default {
+  background: white;
+}
+
+.safe {
+  background-image: url("../assets/icons/safe.svg");
+}
+
+.warning {
+  background-image: url("../assets/icons/warning.png");
+}
+
+.recall {
+  background-image: url("../assets/icons/recall.png");
+}
+
+.fail {
+  background-image: url("../assets/icons/fail.png");
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+/* 아이콘 */
+.status-icon {
+  width: 28px;
+  height: 28px;
+}
+
+/* 텍스트 */
+.status-text {
+  font-size: 18px;
+  font-weight: 600;
+}
