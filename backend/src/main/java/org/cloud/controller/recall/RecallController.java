@@ -1,7 +1,7 @@
-package org.cloud.controller;
+package org.cloud.controller.recall;
 
-import org.cloud.dto.RecallResultResponse;
-import org.cloud.service.RecallService;
+import org.cloud.dto.recall.RecallResultResponse;
+import org.cloud.service.recall.RecallService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

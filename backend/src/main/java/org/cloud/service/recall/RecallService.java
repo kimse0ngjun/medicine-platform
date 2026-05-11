@@ -1,9 +1,9 @@
-package org.cloud.service;
+package org.cloud.service.recall;
 
-import org.cloud.dto.RecallResultResponse;
+import org.cloud.dto.recall.RecallResultResponse;
 import org.cloud.entity.RecallBatch;
 import org.cloud.enums.RecallStatus;
-import org.cloud.mapper.RecallMapper;
+import org.cloud.mapper.recall.RecallMapper;
 import org.cloud.recall.engine.RecallRuleEngine;
 import org.springframework.stereotype.Service;
 

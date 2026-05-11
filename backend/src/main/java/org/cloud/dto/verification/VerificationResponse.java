@@ -1,5 +1,6 @@
-package org.cloud.dto;
+package org.cloud.dto.verification;
 
+import org.cloud.dto.recall.RecallResultResponse;
 import org.cloud.enums.RecallStatus;
 import org.cloud.enums.VerificationStatus;
 

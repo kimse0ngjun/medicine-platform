@@ -2,7 +2,7 @@ package org.cloud.recall.rule;
 
 import java.time.LocalDate;
 
-import org.cloud.dto.RecallResultResponse;
+import org.cloud.dto.recall.RecallResultResponse;
 import org.cloud.entity.RecallBatch;
 import org.cloud.enums.RecallStatus;
 import org.springframework.core.annotation.Order;

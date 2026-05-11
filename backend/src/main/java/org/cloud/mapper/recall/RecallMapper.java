@@ -1,4 +1,4 @@
-package org.cloud.mapper;
+package org.cloud.mapper.recall;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

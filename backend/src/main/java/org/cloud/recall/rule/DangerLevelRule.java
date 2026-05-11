@@ -1,6 +1,6 @@
 package org.cloud.recall.rule;
 
-import org.cloud.dto.RecallResultResponse;
+import org.cloud.dto.recall.RecallResultResponse;
 import org.cloud.entity.RecallBatch;
 import org.cloud.enums.DangerLevel;
 import org.cloud.enums.RecallStatus;

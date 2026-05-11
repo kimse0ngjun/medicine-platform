@@ -2,7 +2,7 @@ package org.cloud.recall.engine;
 
 import java.util.List;
 
-import org.cloud.dto.RecallResultResponse;
+import org.cloud.dto.recall.RecallResultResponse;
 import org.cloud.entity.RecallBatch;
 import org.cloud.enums.RecallStatus;
 import org.cloud.recall.rule.RecallRule;

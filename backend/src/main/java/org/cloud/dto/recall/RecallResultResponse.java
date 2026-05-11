@@ -1,4 +1,4 @@
-package org.cloud.dto;
+package org.cloud.dto.recall;
 
 import java.time.LocalDate;
 

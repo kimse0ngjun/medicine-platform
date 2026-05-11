@@ -1,4 +1,4 @@
-package org.cloud.repository;
+package org.cloud.repository.verficiation;
 
 import org.cloud.entity.Verification;
 import org.springframework.data.jpa.repository.JpaRepository;

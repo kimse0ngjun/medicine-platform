@@ -1,8 +1,8 @@
-package org.cloud.controller;
+package org.cloud.controller.verification;
 
-import org.cloud.dto.VerificationRequest;
-import org.cloud.dto.VerificationResponse;
-import org.cloud.service.VerificationService;
+import org.cloud.dto.verification.VerificationRequest;
+import org.cloud.dto.verification.VerificationResponse;
+import org.cloud.service.verification.VerificationService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

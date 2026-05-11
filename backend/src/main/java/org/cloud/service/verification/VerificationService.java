@@ -1,11 +1,12 @@
-package org.cloud.service;
+package org.cloud.service.verification;
 import org.cloud.MedicineProjectApplication;
-import org.cloud.dto.RecallResultResponse;
-import org.cloud.dto.VerificationRequest;
-import org.cloud.dto.VerificationResponse;
+import org.cloud.dto.recall.RecallResultResponse;
+import org.cloud.dto.verification.VerificationRequest;
+import org.cloud.dto.verification.VerificationResponse;
 import org.cloud.entity.Verification;
 import org.cloud.enums.VerificationStatus;
-import org.cloud.repository.VerificationRepository;
+import org.cloud.repository.verficiation.VerificationRepository;
+import org.cloud.service.recall.RecallService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
