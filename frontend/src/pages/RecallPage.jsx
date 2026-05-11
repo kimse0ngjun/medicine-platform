@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { checkRecall } from "../api/recallApi";
+import { checkRecall } from "../api/recall";
 import SearchBox from "../components/SearchBox";
 import ResultCard from "../components/ResultCard";
 import "./RecallPage.css";

@@ -1,7 +1,7 @@
 .title {
   font-family: var(--heading);
   font-weight: 500;
-  color: #16171d;
+  color: white;
 }
 
 .page {
@@ -15,19 +15,23 @@
 }
 
 .safe {
-  background-image: url("../assets/icons/safe.svg");
+  /* background-image: url("../assets/icons/safe.svg"); */
+  background: #e6ffed;
 }
 
 .warning {
-  background-image: url("../assets/icons/warning.png");
+  /* background-image: url("../assets/icons/warning.png"); */
+  background: #fff8e1;
 }
 
 .recall {
-  background-image: url("../assets/icons/recall.png");
+  /* background-image: url("../assets/icons/recall.png"); */
+  background: #ffe5e5;
 }
 
 .fail {
-  background-image: url("../assets/icons/fail.png");
+  /* background-image: url("../assets/icons/fail.png"); */
+  background: #eeeeee;
 }
 
 .status-row {
