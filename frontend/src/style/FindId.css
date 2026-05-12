@@ -1,0 +1,471 @@
+:root {
+  --bg-page: #171717;
+  --bg-surface: #1c1c1c;
+  --bg-elevated: #242424;
+  --bg-input: #1a1a1a;
+
+  --brand-primary: #6366f1;
+  --brand-green: #00c573;
+  --brand-mint: #72e3ad;
+
+  --text-primary: #fafafa;
+  --text-secondary: #b4b4b4;
+  --text-muted: #898989;
+  --text-disabled: #4d4d4d;
+
+  --border-subtle: #242424;
+  --border-default: #2e2e2e;
+  --border-strong: #363636;
+  --border-accent: rgba(99, 102, 241, 0.3);
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
+
+  --motion-fast: 150ms ease;
+  --motion-standard: 250ms ease;
+
+  --font-sans: "Circular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "Source Code Pro", "Office Code Pro", Menlo, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+a {
+  color: var(--brand-green);
+  text-decoration: none;
+  transition: color var(--motion-fast);
+}
+a:hover {
+  color: var(--brand-mint);
+}
+
+/* ---------- Page ---------- */
+.findid-page {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  background-image:
+    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ---------- Card ---------- */
+.findid-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 40px 32px;
+  box-shadow:
+    0 0 0 1px var(--border-subtle),
+    0 -1px 0 0 rgba(99, 102, 241, 0.15) inset;
+}
+
+/* ---------- Logo ---------- */
+.findid-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+.findid-logo__icon {
+  width: 30px;
+  height: 30px;
+  color: var(--brand-mint);
+}
+.findid-logo__text {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+}
+
+/* ---------- Heading ---------- */
+.findid-heading {
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.16px;
+  line-height: 1.33;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.findid-subheading {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+/* ---------- Method Selector (phone / email toggle) ---------- */
+.method-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.method-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--bg-elevated);
+  cursor: pointer;
+  transition:
+    border-color var(--motion-fast),
+    background var(--motion-fast),
+    color var(--motion-fast);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+}
+.method-btn svg {
+  width: 22px;
+  height: 22px;
+}
+.method-btn__label {
+  font-size: 13px;
+  font-weight: 500;
+}
+.method-btn__desc {
+  font-size: 11px;
+  color: var(--text-disabled);
+}
+
+.method-btn:hover {
+  border-color: var(--border-strong);
+  background: #262626;
+  color: var(--text-secondary);
+}
+
+.method-btn--active {
+  border-color: var(--brand-primary);
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+.method-btn--active svg {
+  color: var(--brand-primary);
+}
+.method-btn--active .method-btn__desc {
+  color: var(--text-muted);
+}
+
+/* ---------- Form ---------- */
+.findid-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.form-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  padding: 10px 12px;
+  width: 100%;
+  outline: none;
+  transition:
+    border-color var(--motion-fast),
+    box-shadow var(--motion-fast);
+}
+.form-input::placeholder {
+  color: var(--text-disabled);
+}
+.form-input:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+/* Phone input with country prefix */
+.phone-input-group {
+  display: flex;
+  gap: 8px;
+}
+.phone-prefix-select {
+  appearance: none;
+  background: var(--bg-input)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23898989' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
+    no-repeat right 8px center;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  padding: 10px 28px 10px 10px;
+  width: 90px;
+  flex-shrink: 0;
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--motion-fast);
+}
+.phone-prefix-select:focus {
+  border-color: var(--brand-primary);
+}
+
+/* OTP inputs row */
+.otp-group {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.otp-input {
+  width: 48px;
+  height: 52px;
+  text-align: center;
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 500;
+  outline: none;
+  transition:
+    border-color var(--motion-fast),
+    box-shadow var(--motion-fast);
+}
+.otp-input:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+.otp-input--filled {
+  border-color: rgba(0, 197, 115, 0.4);
+}
+
+/* Resend row */
+.otp-resend {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.otp-resend__timer {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-disabled);
+}
+.otp-resend__link {
+  color: var(--brand-green);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0;
+  transition: color var(--motion-fast);
+}
+.otp-resend__link:hover {
+  color: var(--brand-mint);
+}
+
+/* ---------- Result Panel (found account) ---------- */
+.findid-result {
+  background: rgba(0, 197, 115, 0.05);
+  border: 1px solid rgba(0, 197, 115, 0.15);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: center;
+  animation: fade-in var(--motion-standard) both;
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.findid-result__icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 197, 115, 0.12);
+  border: 1px solid rgba(0, 197, 115, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  color: var(--brand-green);
+}
+.findid-result__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.findid-result__label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.findid-result__email {
+  font-size: 16px;
+  color: var(--text-primary);
+  font-weight: 500;
+  letter-spacing: -0.1px;
+  margin-bottom: 4px;
+}
+.findid-result__date {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background var(--motion-fast),
+    border-color var(--motion-fast),
+    opacity var(--motion-fast);
+  white-space: nowrap;
+  text-decoration: none;
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn--primary {
+  background: var(--brand-primary);
+  color: #fff;
+  border-color: var(--brand-primary);
+}
+.btn--primary:hover {
+  background: #5254cc;
+}
+
+.btn--full {
+  width: 100%;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border-default);
+}
+.btn--ghost:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+/* ---------- Alert ---------- */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  line-height: 1.5;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.alert--error {
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  color: #fca5a5;
+}
+.alert svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ---------- Back / Footer links ---------- */
+.findid-footer {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.findid-footer a {
+  color: var(--text-muted);
+}
+.findid-footer a:hover {
+  color: var(--brand-green);
+}
+
+.findid-footer__sep {
+  width: 1px;
+  height: 12px;
+  background: var(--border-default);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  .findid-page {
+    padding: 24px 16px;
+  }
+  .findid-card {
+    padding: 28px 20px;
+  }
+  .otp-input {
+    width: 40px;
+    height: 46px;
+    font-size: 18px;
+  }
+}

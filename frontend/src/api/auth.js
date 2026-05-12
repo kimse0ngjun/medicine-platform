@@ -13,3 +13,18 @@ export const login = async (data) => {
 
   return response.data;
 };
+
+export const findId = async (data) => {
+  const response = await axios.post(`${BASE_URL}/api/v1/auth/find-id`, data);
+
+  return response.data;
+};
+
+export const findPassword = async (data) => {
+  const response = await axios.post(
+    `${BASE_URL}/api/v1/auth/find-password`,
+    data,
+  );
+
+  return response.data;
+};
