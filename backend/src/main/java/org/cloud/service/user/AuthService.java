@@ -1,8 +1,13 @@
 package org.cloud.service.user;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.cloud.config.JwtProvider;
 import org.cloud.dto.user.FindIdRequest;
 import org.cloud.dto.user.FindIdResponse;
+import org.cloud.dto.user.FindPasswordRequest;
+import org.cloud.dto.user.FindPasswordResponse;
 import org.cloud.dto.user.LoginRequest;
 import org.cloud.dto.user.LoginResponse;
 import org.cloud.dto.user.SignupRequest;
@@ -22,6 +27,7 @@ public class AuthService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
+	private final EmailService emailService;
 
 	public SignupResponse signup(SignupRequest req) {
 		
@@ -73,11 +79,67 @@ public class AuthService {
 	
 	public FindIdResponse findId(FindIdRequest req) {
 
-	    User user = userRepository.findByNameAndEmail(
-	            req.getNickname(),
-	            req.getEmail()
-	    ).orElseThrow(() -> new RuntimeException("유저 없음"));
+	    Optional<User> optionalUser =
+	            userRepository.findByNicknameAndEmail(
+	                    req.getNickname(),
+	                    req.getEmail()
+	            );
 
-	    return new FindIdResponse(user.getUserId());
+	    if (optionalUser.isEmpty()) {
+	        return new FindIdResponse(
+	                false,
+	                "일치하는 회원이 없습니다.",
+	                null
+	        );
+	    }
+
+	    User user = optionalUser.get();
+
+	    return new FindIdResponse(
+	            true,
+	            "가입된 이메일입니다.",
+	            user.getEmail()
+	    );
+	}
+	
+	public FindPasswordResponse findPassword(
+	        FindPasswordRequest req
+	) {
+
+	    Optional<User> optionalUser =
+	            userRepository.findByNicknameAndEmail(
+	                    req.getNickname(),
+	                    req.getEmail()
+	            );
+
+	    if (optionalUser.isEmpty()) {
+	        return new FindPasswordResponse(
+	                false,
+	                "일치하는 회원이 없습니다."
+	        );
+	    }
+
+	    User user = optionalUser.get();
+
+	    String resetToken =
+	            UUID.randomUUID().toString();
+
+	    user.setResetToken(resetToken);
+
+	    userRepository.save(user);
+
+	    String resetLink =
+	            "http://localhost:5173/reset-password?token="
+	            + resetToken;
+
+	    emailService.sendPasswordResetMail(
+	            user.getEmail(),
+	            resetLink
+	    );
+
+	    return new FindPasswordResponse(
+	            true,
+	            "비밀번호 재설정 메일이 발송되었습니다."
+	    );
 	}
 }

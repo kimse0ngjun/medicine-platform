@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.cloud.mapper.RecallMapper">
+<mapper namespace="org.cloud.mapper.recall.RecallMapper">
 
 	<select id="findByLotNumber"
 	        resultType="org.cloud.entity.RecallBatch">

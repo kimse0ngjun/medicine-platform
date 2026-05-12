@@ -21,22 +21,32 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		
-		http.csrf(csrf -> csrf.disable())
-		.formLogin(form -> form.disable())
-		.httpBasic(basic -> basic.disable())
-		.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/api/v1/auth/**").permitAll()
-				.anyRequest().authenticated()
-				)
-        .addFilterBefore(
-                jwtAuthenticationFilter,
-                UsernamePasswordAuthenticationFilter.class
-        );
-				
-		return http.build();
-	};
+    @Bean
+    public SecurityFilterChain filterChain(
+            HttpSecurity http
+    ) throws Exception {
+
+        http
+            .cors(cors -> {})
+            .csrf(csrf -> csrf.disable())
+            .formLogin(form -> form.disable())
+            .httpBasic(basic -> basic.disable())
+
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers(
+                            "/api/v1/auth/**",
+                            "/api/v1/recall/**"
+                    ).permitAll()
+
+                    .anyRequest().authenticated()
+            )
+
+            .addFilterBefore(
+                    jwtAuthenticationFilter,
+                    UsernamePasswordAuthenticationFilter.class
+            );
+
+        return http.build();
+    }
 }
 

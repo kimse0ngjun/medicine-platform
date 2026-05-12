@@ -5,9 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FindIdResponse {
-	
-	private boolean success;
-	private String message;
-	private String email;
+public class FindPasswordResponse {
+
+    private boolean success;
+    private String message;
 }

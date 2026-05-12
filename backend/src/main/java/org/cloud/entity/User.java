@@ -1,5 +1,6 @@
 package org.cloud.entity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -29,6 +30,10 @@ public class User {
 	private String nickname;
 	
 	private String userInformation;
+	
+	private String resetToken;
+	
+	private LocalDateTime tokenExpiry;
 	
 	@OneToMany(mappedBy = "user")
 	private List<UserMedicine> userMedicines;

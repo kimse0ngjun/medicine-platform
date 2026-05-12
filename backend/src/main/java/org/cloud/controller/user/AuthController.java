@@ -2,6 +2,8 @@ package org.cloud.controller.user;
 
 import org.cloud.dto.user.FindIdRequest;
 import org.cloud.dto.user.FindIdResponse;
+import org.cloud.dto.user.FindPasswordRequest;
+import org.cloud.dto.user.FindPasswordResponse;
 import org.cloud.dto.user.LoginRequest;
 import org.cloud.dto.user.LoginResponse;
 import org.cloud.dto.user.SignupRequest;
@@ -36,4 +38,10 @@ public class AuthController {
 	    return authService.findId(req);
 	}
 	
+	@PostMapping("/find-password")
+	public FindPasswordResponse findPassword(
+	        @RequestBody FindPasswordRequest req
+	) {
+	    return authService.findPassword(req);
+	}
 }
