@@ -30,7 +30,6 @@ export default function Signup() {
   const strengthLabel = ["", "약함", "보통", "강함", "매우 강함"];
   const strength = getStrength(form.password);
 
-  /* ── 유효성 ── */
   const passwordMatch =
     form.password &&
     form.passwordConfirm &&
@@ -81,7 +80,7 @@ export default function Signup() {
   return (
     <div className="signup-page">
       <div className="signup-card">
-        <div className="signup-logo">
+        <div className="signup-logo" onClick={() => navigate("/")}>
           <svg
             className="signup-logo__icon"
             viewBox="0 0 24 24"
@@ -91,7 +90,7 @@ export default function Signup() {
           >
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
           </svg>
-          <span className="signup-logo__text">MediCheck</span>
+          <span className="signup-logo__text">MedicinePlatform</span>
         </div>
 
         <h1 className="signup-heading">회원가입</h1>

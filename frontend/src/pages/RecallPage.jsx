@@ -25,9 +25,13 @@ const STATUS_MESSAGE = {
 };
 
 export default function RecallPage() {
+  const [mode, setMode] = useState("LOT");
   const [lotNumber, setLotNumber] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+
   const nickname = localStorage.getItem("nickname");
 
   const iconMap = {
@@ -42,15 +46,36 @@ export default function RecallPage() {
     window.location.reload();
   };
 
-  const handleSearch = async () => {
-    if (!lotNumber.trim()) return;
+  const handleSearch = async ({ mode, lotNumber, imageFile }) => {
     try {
       setLoading(true);
       setResult(null);
-      const data = await checkRecall(lotNumber);
+
+      let data;
+
+      if (mode === "LOT") {
+        if (!lotNumber.trim()) return;
+        data = await checkRecall(lotNumber);
+      }
+
+      if (mode === "IMAGE") {
+        if (!imageFile) return;
+
+        const formData = new FormData();
+        formData.append("image", imageFile);
+
+        data = {
+          status: "FAIL",
+          message: "이미지 API 미연결 상태",
+        };
+      }
+
       setResult(data);
     } catch {
-      setResult({ status: "FAIL", message: "서버 오류가 발생했습니다." });
+      setResult({
+        status: "FAIL",
+        message: "서버 오류가 발생했습니다.",
+      });
     } finally {
       setLoading(false);
     }
@@ -71,7 +96,7 @@ export default function RecallPage() {
           >
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
           </svg>
-          <span className="recall-header__brand-text">MediCheck</span>
+          <span className="recall-header__brand-text">MedicinePlatform</span>
         </Link>
 
         <div className="recall-header__auth">
@@ -86,7 +111,7 @@ export default function RecallPage() {
             </>
           ) : (
             <>
-              <span className="recall-header__welcome">
+              <span>
                 <strong>{nickname}</strong>님
               </span>
               <Link to="/mypage">
@@ -100,21 +125,23 @@ export default function RecallPage() {
         </div>
       </header>
 
-      {/* ── 메인 콘텐츠 ── */}
       <main className={`recall-page recall-page--${statusKey}`}>
-        {/* 히어로 타이틀 */}
         <div className="recall-hero">
-          <span className="recall-hero__label">Drug Recall Lookup</span>
+          <span className="recall-hero__label">Drug Recall Search</span>
           <h1 className="recall-hero__title">의약품 리콜 조회</h1>
           <p className="recall-hero__subtitle">
-            제조 로트번호를 입력하면 리콜 여부를 즉시 확인할 수 있습니다.
+            LOT 번호 또는 이미지로 리콜 여부를 확인합니다.
           </p>
         </div>
 
         <div className="recall-search-wrap">
           <SearchBox
+            mode={mode}
+            setMode={setMode}
             lotNumber={lotNumber}
             setLotNumber={setLotNumber}
+            imageFile={imageFile}
+            setImageFile={setImageFile}
             onSearch={handleSearch}
           />
         </div>
@@ -133,6 +160,7 @@ export default function RecallPage() {
               src={iconMap[result.status] ?? failIcon}
               alt={result.status}
             />
+
             <div className="recall-status-info">
               <div
                 className={`recall-status-badge recall-status-badge--${statusKey}`}
@@ -140,6 +168,7 @@ export default function RecallPage() {
                 <span className="recall-status-badge__dot" />
                 {STATUS_LABEL[result.status] ?? result.status}
               </div>
+
               <p className="recall-status-message">
                 {result.message ?? STATUS_MESSAGE[result.status]}
               </p>

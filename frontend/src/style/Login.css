@@ -94,6 +94,15 @@ a:hover {
   align-items: center;
   gap: 10px;
   margin-bottom: 32px;
+  cursor: pointer;
+  transition:
+    transform 0.1s ease,
+    opacity 0.1s ease;
+}
+
+.login-logo:active {
+  transform: scale(0.97);
+  opacity: 0.8;
 }
 
 .login-logo__icon {

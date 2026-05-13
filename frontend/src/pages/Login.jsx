@@ -32,7 +32,7 @@ export default function Login() {
   return (
     <div className="login-page">
       <div className="login-card">
-        <div className="login-logo">
+        <div className="login-logo" onClick={() => navigate("/")}>
           <svg
             className="login-logo__icon"
             viewBox="0 0 24 24"
