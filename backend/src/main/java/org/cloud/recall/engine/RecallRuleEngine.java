@@ -14,23 +14,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RecallRuleEngine {
 
-	private final List<RecallRule> rules;
+    private final List<RecallRule> rules;
 
-	public RecallResultResponse execute(RecallBatch batch) {
-		for (RecallRule rule : rules) {
-			RecallResultResponse result = rule.apply(batch);
-			
-			if (result != null) {
-				return result;
-			}
-			
-		}
-		
-		RecallResultResponse fallback = new RecallResultResponse();
-		
-		fallback.setStatus(RecallStatus.SAFE);
-		fallback.setMessage("정상 의약품");
-		
-		return fallback;
-	}
+    public RecallResultResponse execute(RecallBatch batch) {
+
+        for (RecallRule rule : rules) {
+            RecallResultResponse result = rule.apply(batch);
+
+            if (result != null) {
+                return result;
+            }
+        }
+
+        RecallResultResponse fallback = new RecallResultResponse();
+
+        fallback.setStatus(RecallStatus.SAFE);
+        fallback.setProductName(batch.getMedicine().getProductName());
+        fallback.setRecallReason(null);
+        fallback.setDangerLevel(null);
+        fallback.setExpirationDate(null);
+
+        return fallback;
+    }
 }

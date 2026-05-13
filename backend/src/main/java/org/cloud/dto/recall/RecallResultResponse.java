@@ -11,7 +11,8 @@ import lombok.Setter;
 @Getter @Setter
 public class RecallResultResponse {
     private RecallStatus status;   
-    private String message;
+    private String productName;
+    private String recallReason;
     private DangerLevel dangerLevel;
     private LocalDate expirationDate;
 }

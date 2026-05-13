@@ -42,33 +42,40 @@ public class VerificationService {
         repository.save(v);
 
         try {
-        	RecallResultResponse result = recallService.checkRecall(req.getLotNumber());
+            RecallResultResponse result =
+                recallService.checkRecall(req.getLotNumber());
 
+            v.setStatus(VerificationStatus.SUCCESS);
 
-        	v.setStatus(VerificationStatus.SUCCESS);
-            v.setResult(result.getMessage());
+            v.setResult(
+                result.getStatus() + ":" +
+                result.getRecallReason()
+            );
 
             repository.save(v);
 
         } catch (Exception e) {
+
             v.setStatus(VerificationStatus.FAIL);
-            v.setResult(e.getMessage());
+            v.setResult("ERROR");
+
             repository.save(v);
         }
     }
-    
+
     public VerificationResponse get(Long id) {
-    	
-    	Verification v = repository.findById(id).orElseThrow();
-    	
-    	VerificationResponse res = new VerificationResponse();
-    	res.setId(v.getId());
-    	res.setStatus(v.getStatus());
-    	
-    	RecallResultResponse result = recallService.checkRecall(v.getLotNumber());
-    	
-    	res.setRecallResult(result);
-    	
-    	return res;
+
+        Verification v = repository.findById(id).orElseThrow();
+
+        VerificationResponse res = new VerificationResponse();
+        res.setId(v.getId());
+        res.setStatus(v.getStatus());
+
+        RecallResultResponse result =
+            recallService.checkRecall(v.getLotNumber());
+
+        res.setRecallResult(result);
+
+        return res;
     }
 }

@@ -6,4 +6,5 @@ import org.cloud.entity.RecallBatch;
 public interface RecallRule {
 
     RecallResultResponse apply(RecallBatch batch);
+    
 }

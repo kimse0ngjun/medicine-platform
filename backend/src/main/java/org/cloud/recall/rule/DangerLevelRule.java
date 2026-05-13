@@ -8,34 +8,33 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
-@Order()
+@Order
 public class DangerLevelRule implements RecallRule {
 
     @Override
     public RecallResultResponse apply(RecallBatch batch) {
 
+        DangerLevel level = batch.getDangerLevel();
+
         RecallResultResponse result = new RecallResultResponse();
 
-        result.setDangerLevel(batch.getDangerLevel());
+        result.setDangerLevel(level);
         result.setExpirationDate(batch.getExpirationDate());
-
-        DangerLevel level = batch.getDangerLevel();
+        result.setRecallReason(batch.getRecallReason());
+        result.setProductName(batch.getMedicine().getProductName());
 
         if (level == DangerLevel.HIGH) {
             result.setStatus(RecallStatus.RECALL);
-            result.setMessage(batch.getRecallReason());
             return result;
         }
 
         if (level == DangerLevel.MEDIUM) {
             result.setStatus(RecallStatus.WARNING);
-            result.setMessage(batch.getRecallReason());
             return result;
         }
 
         if (level == DangerLevel.LOW) {
             result.setStatus(RecallStatus.SAFE);
-            result.setMessage(batch.getRecallReason());
             return result;
         }
 
