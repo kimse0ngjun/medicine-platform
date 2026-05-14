@@ -22,17 +22,17 @@ public class Medicine {
 	private Long medicineId;
 	
 	@Column(unique = true, nullable = false)
-	private String stardardCode;
+	private String standardCode;
 	
 	private String productName;
 	
 	private String recallObligator;
 	
-	private Boolean isCleansed;
+	private Boolean cleansed;
 	
 	private LocalDateTime createdAt;
 	
-	private LocalDateTime updateAt;
+	private LocalDateTime updatedAt;
 	
 	@OneToMany(mappedBy = "medicine")
 	private List<UserMedicine> userMedicines;

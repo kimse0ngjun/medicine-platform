@@ -3,6 +3,7 @@ package org.cloud.controller.verification;
 import org.cloud.dto.verification.VerificationRequest;
 import org.cloud.dto.verification.VerificationResponse;
 import org.cloud.service.verification.VerificationService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,15 +18,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class VerificationController {
 
-	private final VerificationService verificationService;
-	
-	@PostMapping
-	public Long start(@RequestBody VerificationRequest req) {
-		return verificationService.start(req);
-	}
-	
-	@GetMapping("/{id}")
-	public VerificationResponse get(@PathVariable Long id) {
-		return verificationService.get(id);
-	}
+    private final VerificationService verificationService;
+
+    @PostMapping
+    public ResponseEntity<VerificationResponse> start(
+            @RequestBody VerificationRequest req
+    ) {
+
+        Long id = verificationService.start(req);
+
+        VerificationResponse response =
+                new VerificationResponse();
+
+        response.setId(id);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{verificationId}")
+    public ResponseEntity<VerificationResponse> get(
+            @PathVariable Long verificationId
+    ) {
+
+        return ResponseEntity.ok(
+                verificationService.get(verificationId)
+        );
+    }
 }
