@@ -1,23 +1,28 @@
 import StatusBadge from "./StatusBadge";
 
 export default function ResultCard({ result }) {
-  if (!result) return <p>LOT 번호를 입력하세요</p>;
-
   return (
     <div className="result-card">
-      <StatusBadge status={result?.status ?? "unknown"} />
+      {result.productName && (
+        <div className="result-row">
+          <span>제품명:</span>
+          <strong>{result.productName}</strong>
+        </div>
+      )}
 
-      <h3 className="result-card__title">{result.message}</h3>
+      {result.dangerLevel && (
+        <div className="result-row">
+          <span>위험도:</span>
+          <strong>{result.dangerLevel}</strong>
+        </div>
+      )}
 
-      <div className="result-card__info">
-        <p>위험도: {result.dangerLevel}</p>
-        <p>
-          유효기간:{" "}
-          {result.expirationDate
-            ? new Date(result.expirationDate).toLocaleDateString()
-            : "-"}
-        </p>
-      </div>
+      {result.expirationDate && (
+        <div className="result-row">
+          <span>유효기간:</span>
+          <strong>{result.expirationDate}</strong>
+        </div>
+      )}
     </div>
   );
 }

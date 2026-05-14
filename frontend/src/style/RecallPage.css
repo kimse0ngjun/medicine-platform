@@ -73,10 +73,6 @@ a:hover {
   color: var(--brand-mint);
 }
 
-/* ============================================================
-   HEADER
-   ============================================================ */
-
 .recall-header {
   position: sticky;
   top: 0;
@@ -110,7 +106,6 @@ a:hover {
   letter-spacing: -0.2px;
 }
 
-/* auth buttons area */
 .recall-header__auth {
   display: flex;
   align-items: center;
@@ -127,9 +122,13 @@ a:hover {
   font-weight: 500;
 }
 
-/* ============================================================
-   PAGE LAYOUT
-   ============================================================ */
+.recall-session {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
 
 .recall-page {
   min-height: calc(100vh - 56px);
@@ -145,7 +144,6 @@ a:hover {
   transition: background-color var(--motion-standard);
 }
 
-/* status tints on page background */
 .recall-page--safe {
   background-color: rgba(0, 197, 115, 0.025);
 }
@@ -214,6 +212,20 @@ a:hover {
   align-items: center;
 }
 
+.search-box__menu {
+  position: absolute;
+  top: 56px;
+  left: 0;
+  width: 180px;
+  background: #1c1c1c;
+  border-radius: 14px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 100;
+}
+
 .search-box__prefix {
   position: absolute;
   left: 12px;
@@ -253,7 +265,7 @@ a:hover {
 
 .search-box__input {
   width: 100%;
-  background: var(--bg-surface);
+  background: #4d4d4d;
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
   color: var(--text-primary);

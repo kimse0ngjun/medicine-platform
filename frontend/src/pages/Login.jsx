@@ -15,12 +15,21 @@ export default function Login() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
     setLoading(true);
     setMessage("");
 
     try {
       const res = await login(form);
-      localStorage.setItem("nickname", res.nickname);
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          nickname: res.nickname,
+          expiresAt: Date.now() + 1000 * 60 * 60,
+        }),
+      );
+
       navigate("/");
     } catch (err) {
       setMessage("아이디 또는 비밀번호가 올바르지 않습니다.");

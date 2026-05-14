@@ -3,16 +3,28 @@ import { useState } from "react";
 export default function SearchBox({
   mode,
   setMode,
+
+  productName,
+  setProductName,
+
   lotNumber,
   setLotNumber,
+
   imageFile,
   setImageFile,
+
   onSearch,
 }) {
   const [toolOpen, setToolOpen] = useState(false);
 
   const handleSearch = () => {
-    onSearch({ mode, lotNumber, imageFile });
+    onSearch();
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      onSearch();
+    }
   };
 
   return (
@@ -21,7 +33,7 @@ export default function SearchBox({
         <button
           type="button"
           className="search-box__prefix"
-          onClick={() => setToolOpen((p) => !p)}
+          onClick={() => setToolOpen((prev) => !prev)}
         >
           +
         </button>
@@ -30,20 +42,46 @@ export default function SearchBox({
           <div className="search-box__menu">
             <button
               onClick={() => {
-                setMode("LOT");
+                setMode("PRODUCT");
+
+                setProductName("");
+
                 setLotNumber("");
+
                 setImageFile(null);
+
                 setToolOpen(false);
               }}
             >
-              배치번호 조회
+              제품명 입력
+            </button>
+
+            <button
+              onClick={() => {
+                setMode("LOT");
+
+                setProductName("");
+
+                setLotNumber("");
+
+                setImageFile(null);
+
+                setToolOpen(false);
+              }}
+            >
+              배치번호 입력
             </button>
 
             <button
               onClick={() => {
                 setMode("IMAGE");
+
+                setProductName("");
+
                 setLotNumber("");
+
                 setImageFile(null);
+
                 setToolOpen(false);
               }}
             >
@@ -52,14 +90,27 @@ export default function SearchBox({
           </div>
         )}
 
-        {mode === "LOT" ? (
+        {mode === "PRODUCT" && (
+          <input
+            className="search-box__input"
+            value={productName ?? ""}
+            onChange={(e) => setProductName(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="제품명을 입력해주세요"
+          />
+        )}
+
+        {mode === "LOT" && (
           <input
             className="search-box__input"
             value={lotNumber ?? ""}
             onChange={(e) => setLotNumber(e.target.value)}
-            placeholder="배치번호 입력"
+            onKeyDown={handleKeyDown}
+            placeholder="배치번호를 입력해주세요"
           />
-        ) : (
+        )}
+
+        {mode === "IMAGE" && (
           <input
             className="search-box__input"
             type="file"

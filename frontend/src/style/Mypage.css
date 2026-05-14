@@ -1,0 +1,54 @@
+.mypage-container {
+  min-height: 100vh;
+  background: #0f0f0f;
+  color: white;
+}
+
+.mypage-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.logo {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.user-box {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.mypage-body {
+  padding: 30px;
+  display: grid;
+  gap: 20px;
+}
+
+.profile-card {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.verification-section {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.verification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.verification-card {
+  background: #121212;
+  padding: 15px;
+  border-radius: 10px;
+}
