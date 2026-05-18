@@ -16,10 +16,14 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter
-        extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getRequestURI().startsWith("/api/v1/auth");
+    }
 
     @Override
     protected void doFilterInternal(
@@ -28,22 +32,15 @@ public class JwtAuthenticationFilter
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String authorization =
-                request.getHeader("Authorization");
+        String authorization = request.getHeader("Authorization");
 
-        if (authorization != null &&
-                authorization.startsWith("Bearer ")) {
+        if (authorization != null && authorization.startsWith("Bearer ")) {
 
-            String token =
-                    authorization.substring(7);
+            String token = authorization.substring(7);
 
-            boolean valid =
-                    jwtProvider.validateToken(token);
+            if (jwtProvider.validateToken(token)) {
 
-            if (valid) {
-
-                String email =
-                        jwtProvider.getEmail(token);
+                String email = jwtProvider.getEmail(token);
 
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
@@ -59,4 +56,5 @@ public class JwtAuthenticationFilter
 
         filterChain.doFilter(request, response);
     }
+    
 }

@@ -1,5 +1,7 @@
 package org.cloud.controller.recall;
 
+import java.util.List;
+
 import org.cloud.dto.recall.RecallResultResponse;
 import org.cloud.service.recall.RecallService;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +41,16 @@ public class RecallController {
     ) {
         return ResponseEntity.ok(
                 recallService.checkByImage(image)
+        );
+    }
+    
+    @GetMapping("/detail")
+    public ResponseEntity<?> getRecallDetails(
+            @RequestParam("productName") String productName
+    ) {
+
+        return ResponseEntity.ok(
+                recallService.getRecallDetails(productName)
         );
     }
 }

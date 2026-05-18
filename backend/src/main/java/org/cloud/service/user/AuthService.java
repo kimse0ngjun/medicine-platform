@@ -73,7 +73,8 @@ public class AuthService {
 	    return new LoginResponse(
 	    		"로그인 성공",
 	    		token,
-	    		user.getNickname()
+	    		user.getNickname(),
+	    		user.getEmail()
 	    		);
 	}
 	

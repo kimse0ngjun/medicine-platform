@@ -1,5 +1,7 @@
 package org.cloud.controller.verification;
 
+import java.util.List;
+
 import org.cloud.dto.verification.VerificationRequest;
 import org.cloud.dto.verification.VerificationResponse;
 import org.cloud.service.verification.VerificationService;
@@ -43,5 +45,12 @@ public class VerificationController {
         return ResponseEntity.ok(
                 verificationService.get(verificationId)
         );
+    }
+    
+    @GetMapping
+    public ResponseEntity<List<VerificationResponse>> list() {
+    	return ResponseEntity.ok(
+    				verificationService.list()
+    			);
     }
 }

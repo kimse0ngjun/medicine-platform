@@ -57,4 +57,5 @@ public interface RecallRepository extends JpaRepository<RecallBatch, Long> {
 		List<RecallDetailResponse> findRecallDetailByProductName(
 		        @Param("productName") String productName
 		);
+	
 }

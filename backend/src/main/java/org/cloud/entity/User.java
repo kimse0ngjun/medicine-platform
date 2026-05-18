@@ -35,6 +35,11 @@ public class User {
 	
 	private LocalDateTime tokenExpiry;
 	
+	private LocalDateTime expiresAt;
+	
+	@Column(nullable = false)
+	private boolean deleted;
+	
 	@OneToMany(mappedBy = "user")
 	private List<UserMedicine> userMedicines;
 	

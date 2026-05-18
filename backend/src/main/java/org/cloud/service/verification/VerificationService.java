@@ -1,6 +1,9 @@
 package org.cloud.service.verification;
 
+import java.util.List;
+
 import org.cloud.dto.recall.RecallResultResponse;
+import org.cloud.dto.verification.VerificationDetailResponse;
 import org.cloud.dto.verification.VerificationRequest;
 import org.cloud.dto.verification.VerificationResponse;
 import org.cloud.entity.Verification;
@@ -111,5 +114,18 @@ public class VerificationService {
         }
 
         return res;
+    }
+    
+    public List<VerificationResponse> list() {
+    	return repository.findAll()
+    			.stream()
+    			.map(VerificationResponse::from)
+    			.toList();
+    }
+    
+    public VerificationDetailResponse get1(Long id) {
+    	return repository.findById(id)
+    			.map(VerificationDetailResponse::from)
+    			.orElseThrow();
     }
 }

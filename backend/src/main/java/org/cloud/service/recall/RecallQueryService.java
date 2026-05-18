@@ -7,7 +7,6 @@ import org.cloud.dto.recall.RecallSearchResponse;
 import org.cloud.entity.RecallBatch;
 import org.cloud.repository.recall.RecallRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -19,18 +18,15 @@ public class RecallQueryService {
 
     private final RecallRepository repository;
 
-    public Page<RecallBatch> findByLot(String lotNumber) {
-    	
-    	Pageable pageable = PageRequest.of(0,1);
-    	
+    public Page<RecallBatch> findByLot(String lotNumber, Pageable pageable) {
         return repository.findByLotNumber(lotNumber, pageable);
     }
-    
+
     public List<RecallSearchResponse> findByProductName(String productName) {
         return repository.searchByProductName(productName);
     }
-    
-    public List<RecallDetailResponse> findRecallDetail(String productName) {
+
+    public List<RecallDetailResponse> findRecallDetailByProductName(String productName) {
         return repository.findRecallDetailByProductName(productName);
     }
 }
