@@ -9,7 +9,11 @@ export const signup = async (data) => {
 };
 
 export const login = async (data) => {
-  const response = await axios.post(`${BASE_URL}/api/v1/auth/login`, data);
+  const response = await axios.post(`${BASE_URL}/api/v1/auth/login`, data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   return response.data;
 };

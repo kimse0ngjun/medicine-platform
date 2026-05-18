@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../api/auth";
+import { login as loginAPI } from "../api/auth";
+import { AuthContext } from "../context/AuthContext";
 import "../style/Login.css";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login: setAuth } = useContext(AuthContext); // ← context에서 꺼냄
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
@@ -15,20 +17,17 @@ export default function Login() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
     setMessage("");
 
     try {
-      const res = await login(form);
+      const res = await loginAPI(form);
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          nickname: res.nickname,
-          expiresAt: Date.now() + 1000 * 60 * 60,
-        }),
-      );
+      const token = res.token;
+      const user = { nickname: res.nickname, email: res.email };
+
+      localStorage.setItem("token", token);
+      setAuth(token, user);
 
       navigate("/");
     } catch (err) {

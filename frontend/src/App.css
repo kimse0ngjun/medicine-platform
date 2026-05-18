@@ -170,7 +170,6 @@ a:hover {
   color: var(--text-secondary);
 }
 
-/* right side actions */
 .app-header__actions {
   margin-left: auto;
   display: flex;
