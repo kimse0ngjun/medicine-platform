@@ -7,4 +7,5 @@ import lombok.Setter;
 public class VerificationRequest {
 	private String inputText;
 	private String lotNumber;
+	private String result;
 }

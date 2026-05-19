@@ -17,17 +17,15 @@ public interface RecallRepository extends JpaRepository<RecallBatch, Long> {
 			SELECT new org.cloud.dto.recall.RecallSearchResponse(
 			    m.productName,
 			    m.recallObligator,
-			    COUNT(rb),
+			    COUNT(rb.id),
 			    'CHECK_REQUIRED'
 			)
 			FROM RecallBatch rb
 			JOIN rb.medicine m
 			WHERE m.productName LIKE %:productName%
 			GROUP BY m.productName, m.recallObligator
-			""")
-			List<RecallSearchResponse> searchByProductName(
-			        @Param("productName") String productName
-			);
+		""")
+		List<RecallSearchResponse> searchByProductName(@Param("productName") String productName);
 	
 	@Query("""
 		    SELECT rb
@@ -45,7 +43,7 @@ public interface RecallRepository extends JpaRepository<RecallBatch, Long> {
 		        rb.lotNumber,
 		        m.productName,
 		        rb.recallReason,
-		        CAST(rb.dangerLevel AS string),
+		        rb.dangerLevel,
 		        rb.recallDate,
 		        rb.expirationDate
 		    )
@@ -58,4 +56,11 @@ public interface RecallRepository extends JpaRepository<RecallBatch, Long> {
 		        @Param("productName") String productName
 		);
 	
+	@Query("""
+			SELECT COUNT(rb)
+			FROM RecallBatch rb
+			JOIN rb.medicine m
+			WHERE m.productName = :productName
+			""")
+			Long countByProductName(@Param("productName") String productName);
 }

@@ -10,10 +10,7 @@ import lombok.Setter;
 public class RecallSearchResponse { 
 
 	private String productName;
-	
 	private String recallObligator;
-	
 	private Long recallCount;
-	
 	private String highestSeverity;
 }

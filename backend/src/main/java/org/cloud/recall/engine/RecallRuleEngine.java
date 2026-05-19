@@ -33,6 +33,7 @@ public class RecallRuleEngine {
         fallback.setRecallReason(null);
         fallback.setDangerLevel(null);
         fallback.setExpirationDate(null);
+        fallback.setRecallCount(0L);
 
         return fallback;
     }

@@ -6,6 +6,7 @@ import org.cloud.dto.verification.VerificationRequest;
 import org.cloud.dto.verification.VerificationResponse;
 import org.cloud.service.verification.VerificationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,7 +51,19 @@ public class VerificationController {
     @GetMapping
     public ResponseEntity<List<VerificationResponse>> list() {
     	return ResponseEntity.ok(
-    				verificationService.list()
+    			verificationService.list()
     			);
     }
+    
+    @DeleteMapping("/{verificationId}")
+    public ResponseEntity<Void> delete(
+            @PathVariable("verificationId") Long verificationId
+    ) {
+
+        verificationService.delete(verificationId);
+
+        return ResponseEntity.noContent().build();
+    }
+    
+    
 }

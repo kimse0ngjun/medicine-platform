@@ -53,4 +53,11 @@ public class RecallController {
                 recallService.getRecallDetails(productName)
         );
     }
+    
+    @GetMapping("/detail/lot")
+    public ResponseEntity<?> getRecallDetailsByLot(
+            @RequestParam("lotNumber") String lotNumber
+    ) {
+        return ResponseEntity.ok(recallService.getRecallDetailsByLot(lotNumber));
+    }
 }

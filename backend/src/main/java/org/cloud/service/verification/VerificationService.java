@@ -30,6 +30,7 @@ public class VerificationService {
         v.setStatus(VerificationStatus.PENDING);
         v.setInputText(req.getInputText());
         v.setLotNumber(req.getLotNumber());
+        v.setResult(req.getResult());
 
         repository.save(v);
 
@@ -127,5 +128,10 @@ public class VerificationService {
     	return repository.findById(id)
     			.map(VerificationDetailResponse::from)
     			.orElseThrow();
+    }
+    
+    @Transactional
+    public void delete(Long verificationId) {
+    	repository.deleteById(verificationId);
     }
 }

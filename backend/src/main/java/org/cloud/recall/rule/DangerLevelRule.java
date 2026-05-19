@@ -22,6 +22,7 @@ public class DangerLevelRule implements RecallRule {
         result.setExpirationDate(batch.getExpirationDate());
         result.setRecallReason(batch.getRecallReason());
         result.setProductName(batch.getMedicine().getProductName());
+        result.setLotNumber(batch.getLotNumber());
 
         if (level == DangerLevel.HIGH) {
             result.setStatus(RecallStatus.RECALL);

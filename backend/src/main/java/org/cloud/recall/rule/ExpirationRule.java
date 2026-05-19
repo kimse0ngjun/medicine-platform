@@ -25,6 +25,7 @@ public class ExpirationRule implements RecallRule {
             result.setDangerLevel(batch.getDangerLevel());
             result.setExpirationDate(batch.getExpirationDate());
             result.setProductName(batch.getMedicine().getProductName());
+            result.setLotNumber(batch.getLotNumber());
             
             result.setRecallReason("유통기한 초과"); 
 
