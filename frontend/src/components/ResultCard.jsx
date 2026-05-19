@@ -1,8 +1,9 @@
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import { useState } from "react";
 import StatusBadge from "./StatusBadge";
 import "../style/ResultCard.css";
 
-export default function ResultCard({ result }) {
+export default function ResultCard({ result, mode }) {
   const [expanded, setExpanded] = useState(false);
   const [details, setDetails] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -50,7 +51,7 @@ export default function ResultCard({ result }) {
         <div className="header-left">
           <strong className="product-name">{result.productName}</strong>
 
-          <span className="recall-count">회수 {result.recallCount}건</span>
+          <span className="recall-count"> {result.recallCount}건</span>
         </div>
 
         <button className="detail-btn">{expanded ? "▲" : "▼"}</button>

@@ -38,3 +38,15 @@ export const checkRecallByImage = async (formData) => {
   if (!res.ok) throw new Error("이미지 조회 실패");
   return res.json();
 };
+
+export const getRecallDetailsByLot = async (lotNumber) => {
+  const res = await fetch(
+    `${BASE_URL}/api/v1/recalls/detail/lot?lotNumber=${encodeURIComponent(lotNumber)}`,
+    {
+      headers: authHeader(),
+    },
+  );
+
+  if (!res.ok) throw new Error("LOT 상세 조회 실패");
+  return res.json();
+};

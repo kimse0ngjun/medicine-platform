@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../style/MyPage.css";
 import { getMyUser } from "../api/user";
+import { getVerifications, deleteVerification } from "../api/verification";
 
 const STATUS_KEY = {
   SUCCESS: "success",
@@ -87,6 +88,18 @@ export default function MyPage() {
 
     fetchUser();
   }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteVerification(id);
+
+      setVerifications((prev) =>
+        prev.filter((v) => Number(v.id) !== Number(id)),
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -232,11 +245,21 @@ export default function MyPage() {
                         <span className="status-badge__dot" />
                         {STATUS_LABEL[v.status] ?? v.status}
                       </div>
-                      {v.createdAt && (
-                        <span className="verification-card__date">
-                          {new Date(v.createdAt).toLocaleString("ko-KR")}
-                        </span>
-                      )}
+
+                      <div className="verification-card__actions">
+                        {v.createdAt && (
+                          <span className="verification-card__date">
+                            {new Date(v.createdAt).toLocaleString("ko-KR")}
+                          </span>
+                        )}
+
+                        <button
+                          className="delete-btn"
+                          onClick={() => handleDelete(v.id)}
+                        >
+                          삭제
+                        </button>
+                      </div>
                     </div>
 
                     <div className="verification-card__body">
@@ -250,7 +273,9 @@ export default function MyPage() {
                       </div>
                       <div className="veri-row">
                         <span className="veri-row__key">결과</span>
-                        <span className="veri-row__val">{v.result}</span>
+                        <span className="veri-row__val">
+                          {v.result ?? "제품명 조회"}
+                        </span>
                       </div>
                     </div>
                   </div>

@@ -1,7 +1,13 @@
 import { useEffect, useState, useContext } from "react";
-import { checkRecall, checkRecallByImage, searchProduct } from "../api/recall";
+import {
+  checkRecall,
+  checkRecallByImage,
+  searchProduct,
+  getRecallDetailsByLot,
+} from "../api/recall";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { saveVerification } from "../api/verification";
 
 import SearchBox from "../components/SearchBox";
 import ResultCard from "../components/ResultCard";
@@ -88,35 +94,68 @@ export default function RecallPage() {
 
   const handleSearch = async () => {
     try {
-      setSearched(true);
       setLoading(true);
       setResult(null);
       setResults([]);
+      setSearched(true);
 
       if (mode === "PRODUCT") {
         if (!productName.trim()) return;
+
         const data = await searchProduct(productName);
+
         setResults(data);
         return;
       }
 
       if (mode === "LOT") {
         if (!lotNumber.trim()) return;
+
         const data = await checkRecall(lotNumber);
+
         setResult(data);
+        console.log(data);
         return;
       }
 
       if (mode === "IMAGE") {
         if (!imageFile) return;
+
         const formData = new FormData();
         formData.append("image", imageFile);
+
         const data = await checkRecallByImage(formData);
+
         setResult(data);
       }
-    } catch (e) {
-      console.error(e);
-      setResult({ status: "FAIL", message: "서버 오류가 발생했습니다." });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleToggle = async () => {
+    const nextExpanded = !expanded;
+    setExpanded(nextExpanded);
+    if (details.length > 0 || !nextExpanded) return;
+
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+
+      const url =
+        mode === "LOT" || mode === "IMAGE"
+          ? `${BASE_URL}/api/v1/recalls/detail/lot?lotNumber=${encodeURIComponent(result.lotNumber)}`
+          : `${BASE_URL}/api/v1/recalls/detail?productName=${encodeURIComponent(result.productName)}`;
+
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) throw new Error("상세 조회 실패");
+      const data = await response.json();
+      setDetails(Array.isArray(data) ? data : [data]);
+    } catch (error) {
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -208,7 +247,15 @@ export default function RecallPage() {
           </div>
         )}
 
-        {result && !loading && (
+        {!loading && mode === "PRODUCT" && results.length > 0 && (
+          <div className="recall-result-list">
+            {results.map((item, idx) => (
+              <ResultCard key={idx} result={item} mode="PRODUCT" />
+            ))}
+          </div>
+        )}
+
+        {!loading && mode !== "PRODUCT" && result && (
           <>
             <div
               className={`recall-status-row recall-status-row--${statusKey}`}
@@ -218,6 +265,7 @@ export default function RecallPage() {
                 src={iconMap[result.status] ?? failIcon}
                 alt={result.status}
               />
+
               <div className="recall-status-info">
                 <div
                   className={`recall-status-badge recall-status-badge--${statusKey}`}
@@ -225,6 +273,7 @@ export default function RecallPage() {
                   <span className="recall-status-badge__dot" />
                   {STATUS_LABEL[result.status] ?? result.status}
                 </div>
+
                 <p className="recall-status-message">
                   {result.message ?? STATUS_MESSAGE[result.status]}
                 </p>
@@ -232,17 +281,9 @@ export default function RecallPage() {
             </div>
 
             <div className="recall-result-wrap">
-              <ResultCard result={result} />
+              <ResultCard result={result} mode={mode} />
             </div>
           </>
-        )}
-
-        {!loading && results.length > 0 && (
-          <div className="recall-result-list">
-            {results.map((item, idx) => (
-              <ResultCard key={idx} result={item} />
-            ))}
-          </div>
         )}
 
         {!loading && searched && mode === "PRODUCT" && results.length === 0 && (
