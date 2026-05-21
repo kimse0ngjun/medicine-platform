@@ -34,16 +34,20 @@ public class SecurityConfig {
             .httpBasic(basic -> basic.disable())
 
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(
-                            "/api/v1/auth/**"
-                    ).permitAll()
-                    .requestMatchers("/api/v1/users/me").authenticated()
-                    .requestMatchers("/api/v1/verifications/**").authenticated()
-                    .requestMatchers("/api/v1/recalls/**").authenticated()
-                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            	    .requestMatchers("/api/v1/auth/**").permitAll()
 
-                    .anyRequest().authenticated()
-            )
+            	    .requestMatchers(
+            	        "/api/v1/recalls/search",
+            	        "/api/v1/recalls/check/**",
+            	        "/api/v1/recalls/detail/**"
+            	    ).permitAll()
+            	    .requestMatchers("/api/v1/ai/**").authenticated()
+            	    .requestMatchers("/api/v1/users/me").authenticated()
+            	    .requestMatchers("/api/v1/verifications/**").authenticated()
+            	    .requestMatchers("/api/v1/recalls/**").authenticated()
+            	    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            	    .anyRequest().authenticated()
+            	)
 
             .addFilterBefore(
                     jwtAuthenticationFilter,

@@ -2,7 +2,7 @@ package org.cloud.entity;
 
 import java.time.LocalDate;
 
-import org.cloud.enums.DangerLevel;
+import org.cloud.enums.recall.DangerLevel;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 
 import org.cloud.dto.recall.RecallResultResponse;
 import org.cloud.entity.Verification;
-import org.cloud.enums.VerificationStatus;
+import org.cloud.enums.verification.SearchType;
+import org.cloud.enums.verification.VerificationStatus;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +18,7 @@ public class VerificationResponse { // 1건
     private String inputText;
     private String lotNumber;
     private String result;
-	
+    private SearchType type;
 	private String message;
 	
 	private LocalDateTime createdAt;
@@ -29,12 +30,11 @@ public class VerificationResponse { // 1건
 	    VerificationResponse res = new VerificationResponse();
 
 	    res.setId(entity.getId());
-	    res.setStatus(entity.getStatus());
-	    
+	    res.setStatus(entity.getVerificationStatus());
+	    res.setType(entity.getType());
         res.setInputText(entity.getInputText());
         res.setLotNumber(entity.getLotNumber());
         res.setResult(entity.getResult());
-        
         res.setCreatedAt(entity.getCreatedAt());
 
 	    res.setMessage(

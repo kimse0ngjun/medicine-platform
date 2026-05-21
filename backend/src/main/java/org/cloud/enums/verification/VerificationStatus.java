@@ -1,9 +1,8 @@
-package org.cloud.enums;
+package org.cloud.enums.verification;
 
 public enum VerificationStatus {
 
-	PENDING, // 중단
-	PROCESSING, // 진행
 	SUCCESS, // 성공
+	PENDING, // 실행중
 	FAIL // 실패
 }

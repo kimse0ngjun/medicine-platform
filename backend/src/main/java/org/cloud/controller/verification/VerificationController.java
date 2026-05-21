@@ -2,7 +2,8 @@ package org.cloud.controller.verification;
 
 import java.util.List;
 
-import org.cloud.dto.verification.VerificationRequest;
+import org.cloud.dto.verification.LotVerificationRequest;
+import org.cloud.dto.verification.ProductVerificationRequest;
 import org.cloud.dto.verification.VerificationResponse;
 import org.cloud.service.verification.VerificationService;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,21 +26,22 @@ public class VerificationController {
 
     private final VerificationService verificationService;
 
-    @PostMapping
-    public ResponseEntity<VerificationResponse> start(
-            @RequestBody VerificationRequest req
-    ) {
-
-        Long id = verificationService.start(req);
-
-        VerificationResponse response =
-                new VerificationResponse();
-
-        response.setId(id);
-
-        return ResponseEntity.ok(response);
+    @PostMapping("/product")
+    public ResponseEntity<VerificationResponse> product(@RequestBody ProductVerificationRequest req) {
+        return ResponseEntity.ok(verificationService.verifyProduct(req));
     }
 
+    @PostMapping("/lot")
+    public ResponseEntity<VerificationResponse> lot(@RequestBody LotVerificationRequest req) {
+        return ResponseEntity.ok(verificationService.verifyLot(req));
+    }
+
+    @PostMapping("/image")
+    public ResponseEntity<VerificationResponse> image(@RequestPart MultipartFile image) {
+        return ResponseEntity.ok(verificationService.verifyImage(image));
+    }
+    
+    // 조회
     @GetMapping("/{verificationId}")
     public ResponseEntity<VerificationResponse> get(
             @PathVariable Long verificationId
@@ -55,6 +59,7 @@ public class VerificationController {
     			);
     }
     
+    // 삭제
     @DeleteMapping("/{verificationId}")
     public ResponseEntity<Void> delete(
             @PathVariable("verificationId") Long verificationId
@@ -65,5 +70,10 @@ public class VerificationController {
         return ResponseEntity.noContent().build();
     }
     
-    
+//    // 분석
+//    @PostMapping("/{id}/analyze")
+//    public ResponseEntity<Map<String, String>> analyze(@PathVariable Long id) {
+//        String result = verificationService.analyze(id);
+//        return ResponseEntity.ok(Map.of("analysis", result));
+//    }
 }

@@ -2,8 +2,8 @@ package org.cloud.dto.recall;
 
 import java.time.LocalDate;
 
-import org.cloud.enums.DangerLevel;
-import org.cloud.enums.RecallStatus;
+import org.cloud.enums.recall.DangerLevel;
+import org.cloud.enums.recall.RecallStatus;
 
 import lombok.Getter;
 import lombok.Setter;

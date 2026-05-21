@@ -1,10 +1,11 @@
 package org.cloud.recall.engine;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.cloud.dto.recall.RecallResultResponse;
 import org.cloud.entity.RecallBatch;
-import org.cloud.enums.RecallStatus;
+import org.cloud.enums.recall.RecallStatus;
 import org.cloud.recall.rule.RecallRule;
 import org.springframework.stereotype.Service;
 
@@ -18,23 +19,22 @@ public class RecallRuleEngine {
 
     public RecallResultResponse execute(RecallBatch batch) {
 
-        for (RecallRule rule : rules) {
-            RecallResultResponse result = rule.apply(batch);
+        return rules.stream()
+                .sorted(Comparator.comparingInt(RecallRule::priority))
+                .map(rule -> rule.evaluate(batch))
+                .max(Comparator.comparing(r -> r.getStatus().ordinal()))
+                .orElseGet(() -> fallback(batch));
+    }
 
-            if (result != null) {
-                return result;
-            }
-        }
+    private RecallResultResponse fallback(RecallBatch batch) {
 
-        RecallResultResponse fallback = new RecallResultResponse();
+        RecallResultResponse res = new RecallResultResponse();
+        res.setStatus(RecallStatus.SAFE);
+        res.setRecallReason("규칙 없음");
+        res.setProductName(batch.getMedicine().getProductName());
+        res.setLotNumber(batch.getLotNumber());
+        res.setRecallCount(0L);
 
-        fallback.setStatus(RecallStatus.SAFE);
-        fallback.setProductName(batch.getMedicine().getProductName());
-        fallback.setRecallReason(null);
-        fallback.setDangerLevel(null);
-        fallback.setExpirationDate(null);
-        fallback.setRecallCount(0L);
-
-        return fallback;
+        return res;
     }
 }

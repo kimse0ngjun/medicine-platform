@@ -4,34 +4,42 @@ import java.time.LocalDate;
 
 import org.cloud.dto.recall.RecallResultResponse;
 import org.cloud.entity.RecallBatch;
-import org.cloud.enums.RecallStatus;
+import org.cloud.enums.recall.RecallStatus;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
-@Order(1)
 public class ExpirationRule implements RecallRule {
 
     @Override
-    public RecallResultResponse apply(RecallBatch batch) {
+    public int priority() {
+        return 1;
+    }
+
+    @Override
+    public RecallResultResponse evaluate(RecallBatch batch) {
+
+        RecallResultResponse res = base(batch);
 
         if (batch.getExpirationDate() != null &&
             batch.getExpirationDate().isBefore(LocalDate.now())) {
 
-            RecallResultResponse result = new RecallResultResponse();
-
-            result.setStatus(RecallStatus.RECALL);
-
-            result.setDangerLevel(batch.getDangerLevel());
-            result.setExpirationDate(batch.getExpirationDate());
-            result.setProductName(batch.getMedicine().getProductName());
-            result.setLotNumber(batch.getLotNumber());
-            
-            result.setRecallReason("유통기한 초과"); 
-
-            return result;
+            res.setStatus(RecallStatus.RECALL);
+            res.setRecallReason("유통기한 초과");
+            return res;
         }
 
-        return null;
+        res.setStatus(RecallStatus.SAFE);
+        res.setRecallReason("유통기한 정상");
+        return res;
+    }
+
+    private RecallResultResponse base(RecallBatch batch) {
+        RecallResultResponse r = new RecallResultResponse();
+        r.setProductName(batch.getMedicine().getProductName());
+        r.setLotNumber(batch.getLotNumber());
+        r.setDangerLevel(batch.getDangerLevel());
+        r.setExpirationDate(batch.getExpirationDate());
+        return r;
     }
 }

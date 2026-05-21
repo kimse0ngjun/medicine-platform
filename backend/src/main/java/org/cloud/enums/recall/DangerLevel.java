@@ -1,4 +1,4 @@
-package org.cloud.enums;
+package org.cloud.enums.recall;
 
 public enum DangerLevel {
 

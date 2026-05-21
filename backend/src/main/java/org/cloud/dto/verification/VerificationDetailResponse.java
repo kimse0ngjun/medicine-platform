@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import org.cloud.dto.recall.RecallResultResponse;
 import org.cloud.entity.Verification;
-import org.cloud.enums.VerificationStatus;
+import org.cloud.enums.verification.VerificationStatus;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +34,7 @@ public class VerificationDetailResponse {
         VerificationDetailResponse res = new VerificationDetailResponse();
 
         res.setId(entity.getId());
-        res.setStatus(entity.getStatus());
+        res.setStatus(entity.getVerificationStatus());
 
         res.setMessage(
                 entity.getErrorMessage() != null

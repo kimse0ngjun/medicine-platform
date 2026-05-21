@@ -29,4 +29,14 @@ public class RecallQueryService {
     public List<RecallDetailResponse> findRecallDetailByProductName(String productName) {
         return repository.findRecallDetailByProductName(productName);
     }
+    
+    public List<RecallDetailResponse> findDetailByLotNumber(String lotNumber) {
+
+        return repository.findDetailByLotNumber(lotNumber);
+    }
+    
+    public List<RecallBatch> findByProductNameRaw(String productName) {
+        return repository.findByProductNameRaw(productName);
+    }
+    
 }
