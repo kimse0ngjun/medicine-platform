@@ -22,14 +22,16 @@ export default function ResultCard({ result, mode }) {
 
       const token = localStorage.getItem("token");
 
-      const response = await fetch(
-        `http://localhost:8080/api/v1/recalls/detail?productName=${encodeURIComponent(result.productName)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const url =
+        mode === "LOT" || mode === "IMAGE"
+          ? `${BASE_URL}/api/v1/recalls/detail/lot?lotNumber=${encodeURIComponent(result.lotNumber)}`
+          : `${BASE_URL}/api/v1/recalls/detail?productName=${encodeURIComponent(result.productName)}`;
+
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       if (!response.ok) {
         throw new Error("상세 조회 실패");
@@ -49,9 +51,8 @@ export default function ResultCard({ result, mode }) {
     <div className="result-card">
       <div className="result-header" onClick={handleToggle}>
         <div className="header-left">
-          <strong className="product-name">{result.productName}</strong>
-
-          <span className="recall-count"> {result.recallCount}건</span>
+          <strong className="product-name">{result?.productName}</strong>
+          <span className="recall-count">{result?.recallCount ?? 0}건</span>
         </div>
 
         <button className="detail-btn">{expanded ? "▲" : "▼"}</button>

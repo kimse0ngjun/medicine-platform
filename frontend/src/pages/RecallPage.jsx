@@ -1,13 +1,13 @@
 import { useEffect, useState, useContext } from "react";
+import { checkRecall, checkRecallByImage, searchProduct } from "../api/recall";
 import {
-  checkRecall,
-  checkRecallByImage,
-  searchProduct,
-  getRecallDetailsByLot,
-} from "../api/recall";
+  saveProductVerification,
+  saveLotVerification,
+  saveImageVerification,
+} from "../api/verification";
+
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { saveVerification } from "../api/verification";
 
 import SearchBox from "../components/SearchBox";
 import ResultCard from "../components/ResultCard";
@@ -40,6 +40,7 @@ export default function RecallPage() {
   const [productName, setProductName] = useState("");
   const [lotNumber, setLotNumber] = useState("");
   const [imageFile, setImageFile] = useState(null);
+
   const [result, setResult] = useState(null);
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -52,6 +53,18 @@ export default function RecallPage() {
     RECALL: recallIcon,
     FAIL: failIcon,
   };
+
+  const IconLogo = () => (
+    <svg
+      className="recall-header__brand-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    >
+      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+    </svg>
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -73,6 +86,7 @@ export default function RecallPage() {
 
       const m = Math.floor(diff / 60000);
       const s = Math.floor((diff % 60000) / 1000);
+
       setRemainTime(
         `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
       );
@@ -89,6 +103,7 @@ export default function RecallPage() {
 
     const parsed = JSON.parse(storedUser);
     parsed.expiresAt = Date.now() + 1000 * 60 * 60;
+
     localStorage.setItem("user", JSON.stringify(parsed));
   };
 
@@ -104,7 +119,13 @@ export default function RecallPage() {
 
         const data = await searchProduct(productName);
 
+        console.log("searchProduct raw:", data);
+
         setResults(data);
+        await saveProductVerification({
+          productName,
+          searchType: "PRODUCT",
+        });
         return;
       }
 
@@ -114,7 +135,10 @@ export default function RecallPage() {
         const data = await checkRecall(lotNumber);
 
         setResult(data);
-        console.log(data);
+        await saveLotVerification({
+          lotNumber,
+          searchType: "LOT",
+        });
         return;
       }
 
@@ -126,6 +150,7 @@ export default function RecallPage() {
 
         const data = await checkRecallByImage(formData);
 
+        await saveImageVerification(imageFile, { searchType: "IMAGE" });
         setResult(data);
       }
     } finally {
@@ -133,49 +158,13 @@ export default function RecallPage() {
     }
   };
 
-  const handleToggle = async () => {
-    const nextExpanded = !expanded;
-    setExpanded(nextExpanded);
-    if (details.length > 0 || !nextExpanded) return;
-
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("token");
-
-      const url =
-        mode === "LOT" || mode === "IMAGE"
-          ? `${BASE_URL}/api/v1/recalls/detail/lot?lotNumber=${encodeURIComponent(result.lotNumber)}`
-          : `${BASE_URL}/api/v1/recalls/detail?productName=${encodeURIComponent(result.productName)}`;
-
-      const response = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!response.ok) throw new Error("상세 조회 실패");
-      const data = await response.json();
-      setDetails(Array.isArray(data) ? data : [data]);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const statusKey = result?.status?.toLowerCase() || "";
+  const statusKey = result?.status?.toUpperCase() || "";
 
   return (
     <>
       <header className="recall-header">
         <Link to="/" className="recall-header__brand">
-          <svg
-            className="recall-header__brand-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          >
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-          </svg>
+          <IconLogo /> {/* ← 추가 */}
           <span className="recall-header__brand-text">MedicinePlatform</span>
         </Link>
 
@@ -209,7 +198,7 @@ export default function RecallPage() {
                 <button className="btn btn--ghost">마이페이지</button>
               </Link>
 
-              <button className="btn btn--ghost" onClick={handleLogout}>
+              <button className="btn btn--danger" onClick={handleLogout}>
                 로그아웃
               </button>
             </>
@@ -219,7 +208,6 @@ export default function RecallPage() {
 
       <main className={`recall-page recall-page--${statusKey}`}>
         <div className="recall-hero">
-          <span className="recall-hero__label">Drug Recall Search</span>
           <h1 className="recall-hero__title">의약품 회수 이력 조회</h1>
           <p className="recall-hero__subtitle">
             제품명, LOT 번호 또는 이미지로 회수 이력을 확인합니다.
@@ -267,10 +255,7 @@ export default function RecallPage() {
               />
 
               <div className="recall-status-info">
-                <div
-                  className={`recall-status-badge recall-status-badge--${statusKey}`}
-                >
-                  <span className="recall-status-badge__dot" />
+                <div className={`recall-status-badge`}>
                   {STATUS_LABEL[result.status] ?? result.status}
                 </div>
 
@@ -287,9 +272,7 @@ export default function RecallPage() {
         )}
 
         {!loading && searched && mode === "PRODUCT" && results.length === 0 && (
-          <div className="recall-empty">
-            현재 등록된 회수 이력이 확인되지 않았습니다.
-          </div>
+          <div className="recall-empty">조회 결과가 없습니다.</div>
         )}
       </main>
     </>

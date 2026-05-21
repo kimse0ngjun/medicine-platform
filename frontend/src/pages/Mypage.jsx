@@ -5,9 +5,9 @@ import { getMyUser } from "../api/user";
 import { getVerifications, deleteVerification } from "../api/verification";
 
 const STATUS_KEY = {
-  SUCCESS: "success",
-  PROCESSING: "processing",
   PENDING: "pending",
+  PROCESSING: "processing",
+  SUCCESS: "success",
   FAIL: "fail",
 };
 
@@ -16,6 +16,12 @@ const STATUS_LABEL = {
   PROCESSING: "처리 중",
   PENDING: "대기",
   FAIL: "실패",
+};
+
+const SEARCH_LABEL = {
+  PRODUCT: "제품명 검색",
+  LOT: "배치번호 검색",
+  IMAGE: "이미지 조회",
 };
 
 const initial = (name) => (name ? name[0].toUpperCase() : "?");
@@ -75,11 +81,9 @@ export default function MyPage() {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("token");
-        console.log("token:", token);
         if (!token) return;
 
         const data = await getMyUser(token);
-        console.log("user API 응답:", data);
         setUser(data);
       } catch (err) {
         console.error(err);
@@ -136,6 +140,7 @@ export default function MyPage() {
 
         const data = await getVerifications();
 
+        console.log("API 응답:", data);
         setVerifications(data);
       } catch (e) {
         console.error(e);
@@ -149,7 +154,8 @@ export default function MyPage() {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    window.location.reload();
+    localStorage.removeItem("token");
+    window.location.href = "/";
   };
 
   return (
@@ -234,6 +240,11 @@ export default function MyPage() {
             <div className="verification-list">
               {verifications.map((v, i) => {
                 const key = STATUS_KEY[v.status] ?? "pending";
+
+                const isProduct = v.type === "PRODUCT";
+                const isLot = v.type === "LOT";
+                const isImage = v.type === "IMAGE";
+
                 return (
                   <div
                     key={v.id}
@@ -243,7 +254,7 @@ export default function MyPage() {
                     <div className="verification-card__top">
                       <div className={`status-badge status-badge--${key}`}>
                         <span className="status-badge__dot" />
-                        {STATUS_LABEL[v.status] ?? v.status}
+                        {STATUS_LABEL[key] ?? v.status}
                       </div>
 
                       <div className="verification-card__actions">
@@ -262,22 +273,73 @@ export default function MyPage() {
                       </div>
                     </div>
 
-                    <div className="verification-card__body">
-                      <div className="veri-row">
-                        <span className="veri-row__key">입력값</span>
-                        <span className="veri-row__val">{v.inputText}</span>
+                    {isProduct && (
+                      <div className="verification-card__body">
+                        <div className="veri-row">
+                          <span className="veri-row__key">조회방식</span>
+                          <span className="veri-row__val">
+                            {SEARCH_LABEL[v.searchType] ?? v.searchType}
+                          </span>
+                        </div>
+
+                        <div className="veri-row">
+                          <span className="veri-row__key">제품명</span>
+                          <span className="veri-row__val">{v.inputText}</span>
+                        </div>
+
+                        <div className="veri-row">
+                          <span className="veri-row__key">결과</span>
+                          <span className="veri-row__val">{v.result}</span>
+                        </div>
                       </div>
-                      <div className="veri-row">
-                        <span className="veri-row__key">LOT</span>
-                        <span className="veri-row__val">{v.lotNumber}</span>
+                    )}
+
+                    {isLot && (
+                      <div className="verification-card__body">
+                        <div className="veri-row">
+                          <span className="veri-row__key">조회방식</span>
+                          <span className="veri-row__val">
+                            {SEARCH_LABEL[v.searchType] ?? v.searchType}
+                          </span>
+                        </div>
+
+                        <div className="veri-row">
+                          <span className="veri-row__key">LOT 번호</span>
+                          <span className="veri-row__val">{v.lotNumber}</span>
+                        </div>
+
+                        <div className="veri-row">
+                          <span className="veri-row__key">결과</span>
+                          <span className="veri-row__val">{v.result}</span>
+                        </div>
                       </div>
-                      <div className="veri-row">
-                        <span className="veri-row__key">결과</span>
-                        <span className="veri-row__val">
-                          {v.result ?? "제품명 조회"}
-                        </span>
+                    )}
+
+                    {isImage && (
+                      <div className="verification-card__body">
+                        <div className="veri-row">
+                          <span className="veri-row__key">조회방식</span>
+                          <span className="veri-row__val">
+                            {SEARCH_LABEL[v.searchType] ?? v.searchType}
+                          </span>
+                        </div>
+
+                        <div className="veri-row">
+                          <span className="veri-row__key">이미지 조회</span>
+                          <span className="veri-row__val">이미지 OCR</span>
+                        </div>
+
+                        <div className="veri-row">
+                          <span className="veri-row__key">추출 LOT</span>
+                          <span className="veri-row__val">{v.lotNumber}</span>
+                        </div>
+
+                        <div className="veri-row">
+                          <span className="veri-row__key">결과</span>
+                          <span className="veri-row__val">{v.result}</span>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 );
               })}

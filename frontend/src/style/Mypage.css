@@ -276,6 +276,12 @@ a {
   border-color: var(--border-strong);
 }
 
+.verification-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 @keyframes card-in {
   from {
     opacity: 0;
@@ -316,9 +322,9 @@ a {
 
 .verification-card__date {
   font-family: var(--font-mono);
-  font-size: 11px;
-
+  font-size: 12px;
   color: var(--text-disabled);
+  margin-right: 10px;
 }
 
 .verification-card__body {

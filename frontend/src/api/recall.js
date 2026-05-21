@@ -28,10 +28,17 @@ export const checkRecall = async (lotNumber) => {
   return res.json();
 };
 
-export const checkRecallByImage = async (formData) => {
+export const checkRecallByImage = async (imageFile) => {
+  const formData = new FormData();
+  formData.append("file", imageFile);
+
+  const token = localStorage.getItem("token");
+
   const res = await fetch(`${BASE_URL}/api/v1/recalls/image`, {
     method: "POST",
-    headers: authHeader(),
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     body: formData,
   });
 
