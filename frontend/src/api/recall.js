@@ -30,7 +30,7 @@ export const checkRecall = async (lotNumber) => {
 
 export const checkRecallByImage = async (imageFile) => {
   const formData = new FormData();
-  formData.append("file", imageFile);
+  formData.append("image", imageFile);
 
   const token = localStorage.getItem("token");
 

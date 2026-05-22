@@ -140,7 +140,6 @@ export default function MyPage() {
 
         const data = await getVerifications();
 
-        console.log("API 응답:", data);
         setVerifications(data);
       } catch (e) {
         console.error(e);
@@ -278,7 +277,7 @@ export default function MyPage() {
                         <div className="veri-row">
                           <span className="veri-row__key">조회방식</span>
                           <span className="veri-row__val">
-                            {SEARCH_LABEL[v.searchType] ?? v.searchType}
+                            {SEARCH_LABEL[v.type] ?? v.type}
                           </span>
                         </div>
 
@@ -299,7 +298,7 @@ export default function MyPage() {
                         <div className="veri-row">
                           <span className="veri-row__key">조회방식</span>
                           <span className="veri-row__val">
-                            {SEARCH_LABEL[v.searchType] ?? v.searchType}
+                            {SEARCH_LABEL[v.type] ?? v.type}
                           </span>
                         </div>
 
@@ -320,13 +319,8 @@ export default function MyPage() {
                         <div className="veri-row">
                           <span className="veri-row__key">조회방식</span>
                           <span className="veri-row__val">
-                            {SEARCH_LABEL[v.searchType] ?? v.searchType}
+                            {SEARCH_LABEL[v.type] ?? v.type}
                           </span>
-                        </div>
-
-                        <div className="veri-row">
-                          <span className="veri-row__key">이미지 조회</span>
-                          <span className="veri-row__val">이미지 OCR</span>
                         </div>
 
                         <div className="veri-row">

@@ -145,12 +145,10 @@ export default function RecallPage() {
       if (mode === "IMAGE") {
         if (!imageFile) return;
 
-        const formData = new FormData();
-        formData.append("image", imageFile);
+        const data = await checkRecallByImage(imageFile);
 
-        const data = await checkRecallByImage(formData);
+        await saveImageVerification(imageFile);
 
-        await saveImageVerification(imageFile, { searchType: "IMAGE" });
         setResult(data);
       }
     } finally {

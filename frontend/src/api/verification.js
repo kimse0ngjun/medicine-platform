@@ -54,7 +54,7 @@ export async function saveImageVerification(file) {
   }
 
   const formData = new FormData();
-  formData.append("image", file);
+  formData.append("file", file);
 
   const res = await fetch(`${BASE_URL}/api/v1/verifications/image`, {
     method: "POST",
