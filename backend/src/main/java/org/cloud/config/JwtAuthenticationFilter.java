@@ -3,7 +3,9 @@ package org.cloud.config;
 import java.io.IOException;
 import java.util.List;
 
+import org.cloud.config.JwtProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -22,7 +24,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getRequestURI().startsWith("/api/v1/auth");
+        String path = request.getRequestURI();
+
+        return path.startsWith("/api/v1/auth");
     }
 
     @Override
@@ -32,9 +36,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String authorization = request.getHeader("Authorization");
+        try {
+            String authorization = request.getHeader("Authorization");
 
-        if (authorization != null && authorization.startsWith("Bearer ")) {
+            if (authorization == null || !authorization.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             String token = authorization.substring(7);
 
@@ -46,15 +54,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(
                                 email,
                                 null,
-                                List.of()
+                                List.of(new SimpleGrantedAuthority("ROLE_USER"))
                         );
 
-                SecurityContextHolder.getContext()
-                        .setAuthentication(auth);
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
+
+        } catch (Exception e) {
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
     }
-    
 }

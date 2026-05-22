@@ -6,6 +6,7 @@ import org.cloud.dto.verification.LotVerificationRequest;
 import org.cloud.dto.verification.ProductVerificationRequest;
 import org.cloud.dto.verification.VerificationResponse;
 import org.cloud.service.verification.VerificationService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,9 +37,11 @@ public class VerificationController {
         return ResponseEntity.ok(verificationService.verifyLot(req));
     }
 
-    @PostMapping("/image")
-    public ResponseEntity<VerificationResponse> image(@RequestPart MultipartFile image) {
-        return ResponseEntity.ok(verificationService.verifyImage(image));
+    @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public VerificationResponse verifyImage(
+            @RequestPart("file") MultipartFile file
+    ) {
+        return verificationService.verifyImage(file);
     }
     
     // 조회
