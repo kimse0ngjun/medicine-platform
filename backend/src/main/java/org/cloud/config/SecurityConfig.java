@@ -39,9 +39,9 @@ public class SecurityConfig {
             	    .requestMatchers(
             	        "/api/v1/recalls/search",
             	        "/api/v1/recalls/check/**",
-            	        "/api/v1/recalls/detail/**"
+            	        "/api/v1/recalls/detail/**",
+            	        "/api/v1/ai/**"
             	    ).permitAll()
-            	    .requestMatchers("/api/v1/ai/**").authenticated()
             	    .requestMatchers("/api/v1/users/me").authenticated()
             	    .requestMatchers("/api/v1/verifications/**").authenticated()
             	    .requestMatchers("/api/v1/recalls/**").authenticated()
