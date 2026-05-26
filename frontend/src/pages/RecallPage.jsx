@@ -5,6 +5,7 @@ import {
   saveLotVerification,
   saveImageVerification,
 } from "../api/verification";
+import { generateAiSummary } from "../api/ai";
 
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -46,6 +47,8 @@ export default function RecallPage() {
   const [loading, setLoading] = useState(false);
   const [remainTime, setRemainTime] = useState("");
   const [searched, setSearched] = useState(false);
+  const [aiSummary, setAiSummary] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
 
   const iconMap = {
     SAFE: safeIcon,
@@ -110,6 +113,7 @@ export default function RecallPage() {
   const handleSearch = async () => {
     try {
       setLoading(true);
+      setAiSummary("");
       setResult(null);
       setResults([]);
       setSearched(true);
@@ -156,13 +160,26 @@ export default function RecallPage() {
     }
   };
 
+  const handleAiSummary = async () => {
+    try {
+      const productName = results[0].productName;
+      const data = await generateAiSummary(productName);
+
+      console.log("AI 결과:", data);
+      setAiSummary(data.answer);
+    } catch (error) {
+      console.error("AI 호출 실패:", error.message);
+      setAiResult("요약 생성 실패");
+    }
+  };
+
   const statusKey = result?.status?.toUpperCase() || "";
 
   return (
     <>
       <header className="recall-header">
         <Link to="/" className="recall-header__brand">
-          <IconLogo /> {/* ← 추가 */}
+          <IconLogo />
           <span className="recall-header__brand-text">MedicinePlatform</span>
         </Link>
 
@@ -234,11 +251,31 @@ export default function RecallPage() {
         )}
 
         {!loading && mode === "PRODUCT" && results.length > 0 && (
-          <div className="recall-result-list">
-            {results.map((item, idx) => (
-              <ResultCard key={idx} result={item} mode="PRODUCT" />
-            ))}
-          </div>
+          <>
+            <div className="recall-result-list">
+              {results.map((item, idx) => (
+                <ResultCard key={idx} result={item} mode="PRODUCT" />
+              ))}
+            </div>
+
+            <div className="ai-summary-section">
+              <button
+                className="btn btn--primary"
+                onClick={handleAiSummary}
+                disabled={aiLoading}
+              >
+                {aiLoading ? "AI 분석 중..." : "🤖 AI 요약 생성"}
+              </button>
+            </div>
+
+            {aiSummary && (
+              <div className="ai-summary-card">
+                <div className="ai-summary-header">🤖 AI 요약본</div>
+
+                <div className="ai-summary-content">{aiSummary}</div>
+              </div>
+            )}
+          </>
         )}
 
         {!loading && mode !== "PRODUCT" && result && (
