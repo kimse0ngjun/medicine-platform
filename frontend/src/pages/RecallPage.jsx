@@ -1,0 +1,315 @@
+import { useEffect, useState, useContext } from "react";
+import { checkRecall, checkRecallByImage, searchProduct } from "../api/recall";
+import {
+  saveProductVerification,
+  saveLotVerification,
+  saveImageVerification,
+} from "../api/verification";
+import { generateAiSummary } from "../api/ai";
+
+import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+
+import SearchBox from "../components/SearchBox";
+import ResultCard from "../components/ResultCard";
+
+import "../style/RecallPage.css";
+
+import safeIcon from "../assets/icons/safe.svg";
+import warningIcon from "../assets/icons/warning.png";
+import recallIcon from "../assets/icons/recall.png";
+import failIcon from "../assets/icons/fail.png";
+
+const STATUS_LABEL = {
+  SAFE: "안전",
+  WARNING: "주의",
+  RECALL: "리콜",
+  FAIL: "조회 실패",
+};
+
+const STATUS_MESSAGE = {
+  SAFE: "현재 등록된 회수 이력이 확인되지 않았습니다.",
+  WARNING: "해당 의약품에 주의 사항이 있습니다.",
+  RECALL: "과거 회수 이력이 존재합니다.",
+  FAIL: "조회 중 오류가 발생했습니다.",
+};
+
+export default function RecallPage() {
+  const { isLoggedIn, user, logout } = useContext(AuthContext);
+
+  const [mode, setMode] = useState("PRODUCT");
+  const [productName, setProductName] = useState("");
+  const [lotNumber, setLotNumber] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+
+  const [result, setResult] = useState(null);
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [remainTime, setRemainTime] = useState("");
+  const [searched, setSearched] = useState(false);
+  const [aiSummary, setAiSummary] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const iconMap = {
+    SAFE: safeIcon,
+    WARNING: warningIcon,
+    RECALL: recallIcon,
+    FAIL: failIcon,
+  };
+
+  const IconLogo = () => (
+    <svg
+      className="recall-header__brand-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    >
+      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+    </svg>
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const storedUser = localStorage.getItem("user");
+
+      if (!storedUser) {
+        setRemainTime("");
+        return;
+      }
+
+      const parsed = JSON.parse(storedUser);
+      const diff = parsed.expiresAt - Date.now();
+
+      if (diff <= 0) {
+        logout();
+        clearInterval(interval);
+        return;
+      }
+
+      const m = Math.floor(diff / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+
+      setRemainTime(
+        `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
+      );
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleLogout = () => logout();
+
+  const handleExtendSession = () => {
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) return;
+
+    const parsed = JSON.parse(storedUser);
+    parsed.expiresAt = Date.now() + 1000 * 60 * 60;
+
+    localStorage.setItem("user", JSON.stringify(parsed));
+  };
+
+  const handleSearch = async () => {
+    try {
+      setLoading(true);
+      setAiSummary("");
+      setResult(null);
+      setResults([]);
+      setSearched(true);
+
+      if (mode === "PRODUCT") {
+        if (!productName.trim()) return;
+
+        const data = await searchProduct(productName);
+
+        console.log("searchProduct raw:", data);
+
+        setResults(data);
+        await saveProductVerification({
+          productName,
+          searchType: "PRODUCT",
+        });
+        return;
+      }
+
+      if (mode === "LOT") {
+        if (!lotNumber.trim()) return;
+
+        const data = await checkRecall(lotNumber);
+
+        setResult(data);
+        await saveLotVerification({
+          lotNumber,
+          searchType: "LOT",
+        });
+        return;
+      }
+
+      if (mode === "IMAGE") {
+        if (!imageFile) return;
+
+        const data = await checkRecallByImage(imageFile);
+
+        await saveImageVerification(imageFile);
+
+        setResult(data);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAiSummary = async () => {
+    try {
+      const productName = results[0].productName;
+      const data = await generateAiSummary(productName);
+
+      console.log("AI 결과:", data);
+      setAiSummary(data.answer);
+    } catch (error) {
+      console.error("AI 호출 실패:", error.message);
+      setAiResult("요약 생성 실패");
+    }
+  };
+
+  const statusKey = result?.status?.toUpperCase() || "";
+
+  return (
+    <>
+      <header className="recall-header">
+        <Link to="/" className="recall-header__brand">
+          <IconLogo />
+          <span className="recall-header__brand-text">MedicinePlatform</span>
+        </Link>
+
+        <div className="recall-header__auth">
+          {!isLoggedIn ? (
+            <>
+              <Link to="/auth/login">
+                <button className="btn btn--ghost">로그인</button>
+              </Link>
+              <Link to="/auth/signup">
+                <button className="btn btn--primary">회원가입</button>
+              </Link>
+            </>
+          ) : (
+            <>
+              <div>
+                <strong>{user?.nickname}</strong>님
+              </div>
+
+              <div className="recall-session">
+                <span>{remainTime} 이용 가능</span>
+                <button
+                  className="btn btn--ghost"
+                  onClick={handleExtendSession}
+                >
+                  시간 연장
+                </button>
+              </div>
+
+              <Link to="/mypage">
+                <button className="btn btn--ghost">마이페이지</button>
+              </Link>
+
+              <button className="btn btn--danger" onClick={handleLogout}>
+                로그아웃
+              </button>
+            </>
+          )}
+        </div>
+      </header>
+
+      <main className={`recall-page recall-page--${statusKey}`}>
+        <div className="recall-hero">
+          <h1 className="recall-hero__title">의약품 회수 이력 조회</h1>
+          <p className="recall-hero__subtitle">
+            제품명, LOT 번호 또는 이미지로 회수 이력을 확인합니다.
+          </p>
+        </div>
+
+        <div className="recall-search-wrap">
+          <SearchBox
+            mode={mode}
+            setMode={setMode}
+            productName={productName}
+            setProductName={setProductName}
+            lotNumber={lotNumber}
+            setLotNumber={setLotNumber}
+            imageFile={imageFile}
+            setImageFile={setImageFile}
+            onSearch={handleSearch}
+          />
+        </div>
+
+        {loading && (
+          <div className="recall-loading">
+            <div className="recall-loading__spinner" />
+            <span>조회 중...</span>
+          </div>
+        )}
+
+        {!loading && mode === "PRODUCT" && results.length > 0 && (
+          <>
+            <div className="recall-result-list">
+              {results.map((item, idx) => (
+                <ResultCard key={idx} result={item} mode="PRODUCT" />
+              ))}
+            </div>
+
+            <div className="ai-summary-section">
+              <button
+                className="btn btn--primary"
+                onClick={handleAiSummary}
+                disabled={aiLoading}
+              >
+                {aiLoading ? "AI 분석 중..." : "🤖 AI 요약 생성"}
+              </button>
+            </div>
+
+            {aiSummary && (
+              <div className="ai-summary-card">
+                <div className="ai-summary-header">🤖 AI 요약본</div>
+
+                <div className="ai-summary-content">{aiSummary}</div>
+              </div>
+            )}
+          </>
+        )}
+
+        {!loading && mode !== "PRODUCT" && result && (
+          <>
+            <div
+              className={`recall-status-row recall-status-row--${statusKey}`}
+            >
+              <img
+                className="recall-status-icon"
+                src={iconMap[result.status] ?? failIcon}
+                alt={result.status}
+              />
+
+              <div className="recall-status-info">
+                <div className={`recall-status-badge`}>
+                  {STATUS_LABEL[result.status] ?? result.status}
+                </div>
+
+                <p className="recall-status-message">
+                  {result.message ?? STATUS_MESSAGE[result.status]}
+                </p>
+              </div>
+            </div>
+
+            <div className="recall-result-wrap">
+              <ResultCard result={result} mode={mode} />
+            </div>
+          </>
+        )}
+
+        {!loading && searched && mode === "PRODUCT" && results.length === 0 && (
+          <div className="recall-empty">조회 결과가 없습니다.</div>
+        )}
+      </main>
+    </>
+  );
+}
