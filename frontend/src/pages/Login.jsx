@@ -131,10 +131,10 @@ export default function Login() {
           <div className="login-form__meta">
             <span />
             <div style={{ display: "flex", gap: "12px" }}>
-              <a href="/find-id" className="form-forgot">
+              <a href="/auth/find-id" className="form-forgot">
                 아이디 찾기
               </a>
-              <a href="/find-password" className="form-forgot">
+              <a href="/auth/find-password" className="form-forgot">
                 비밀번호 찾기
               </a>
             </div>
@@ -152,7 +152,7 @@ export default function Login() {
 
         <div className="login-footer">
           계정이 없으신가요?&nbsp;
-          <a href="/signup">회원가입</a>
+          <a href="/auth/signup">회원가입</a>
         </div>
       </div>
     </div>

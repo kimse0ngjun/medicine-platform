@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "../style/MyPage.css";
 import { getMyUser } from "../api/user";
 import { getVerifications, deleteVerification } from "../api/verification";
+import Pagination from "../components/Pagination";
 
 const STATUS_KEY = {
   PENDING: "pending",
@@ -76,6 +77,8 @@ export default function MyPage() {
   const [remainMs, setRemainMs] = useState(Infinity);
   const [verifications, setVerifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -150,6 +153,13 @@ export default function MyPage() {
 
     fetchVerifications();
   }, []);
+
+  const totalPages = Math.ceil(verifications.length / itemsPerPage);
+
+  const currentItems = verifications.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -236,108 +246,119 @@ export default function MyPage() {
           )}
 
           {!loading && verifications.length > 0 && (
-            <div className="verification-list">
-              {verifications.map((v, i) => {
-                const key = STATUS_KEY[v.status] ?? "pending";
+            <>
+              <div className="verification-list">
+                {currentItems.map((v, i) => {
+                  const key = STATUS_KEY[v.status] ?? "pending";
 
-                const isProduct = v.type === "PRODUCT";
-                const isLot = v.type === "LOT";
-                const isImage = v.type === "IMAGE";
+                  const isProduct = v.type === "PRODUCT";
+                  const isLot = v.type === "LOT";
+                  const isImage = v.type === "IMAGE";
 
-                return (
-                  <div
-                    key={v.id}
-                    className={`verification-card verification-card--${key}`}
-                    style={{ animationDelay: `${i * 40}ms` }}
-                  >
-                    <div className="verification-card__top">
-                      <div className={`status-badge status-badge--${key}`}>
-                        <span className="status-badge__dot" />
-                        {STATUS_LABEL[key] ?? v.status}
+                  return (
+                    <div
+                      key={v.id}
+                      className={`verification-card verification-card--${key}`}
+                      style={{ animationDelay: `${i * 40}ms` }}
+                    >
+                      <div className="verification-card__top">
+                        <div className={`status-badge status-badge--${key}`}>
+                          <span className="status-badge__dot" />
+                          {STATUS_LABEL[key] ?? v.status}
+                        </div>
+
+                        <div className="verification-card__actions">
+                          {v.createdAt && (
+                            <span className="verification-card__date">
+                              {new Date(v.createdAt).toLocaleString("ko-KR")}
+                            </span>
+                          )}
+
+                          <button
+                            className="delete-btn"
+                            onClick={() => handleDelete(v.id)}
+                          >
+                            삭제
+                          </button>
+                        </div>
                       </div>
 
-                      <div className="verification-card__actions">
-                        {v.createdAt && (
-                          <span className="verification-card__date">
-                            {new Date(v.createdAt).toLocaleString("ko-KR")}
-                          </span>
-                        )}
+                      {isProduct && (
+                        <div className="verification-card__body">
+                          <div className="veri-row">
+                            <span className="veri-row__key">조회방식</span>
+                            <span className="veri-row__val">
+                              {SEARCH_LABEL[v.type] ?? v.type}
+                            </span>
+                          </div>
 
-                        <button
-                          className="delete-btn"
-                          onClick={() => handleDelete(v.id)}
-                        >
-                          삭제
-                        </button>
-                      </div>
+                          <div className="veri-row">
+                            <span className="veri-row__key">제품명</span>
+                            <span className="veri-row__val">{v.inputText}</span>
+                          </div>
+
+                          <div className="veri-row">
+                            <span className="veri-row__key">결과</span>
+                            <span className="veri-row__val">
+                              {v.result?.length > 120
+                                ? `${v.result.slice(0, 120)}...`
+                                : v.result}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {isLot && (
+                        <div className="verification-card__body">
+                          <div className="veri-row">
+                            <span className="veri-row__key">조회방식</span>
+                            <span className="veri-row__val">
+                              {SEARCH_LABEL[v.type] ?? v.type}
+                            </span>
+                          </div>
+
+                          <div className="veri-row">
+                            <span className="veri-row__key">LOT 번호</span>
+                            <span className="veri-row__val">{v.lotNumber}</span>
+                          </div>
+
+                          <div className="veri-row">
+                            <span className="veri-row__key">결과</span>
+                            <span className="veri-row__val">{v.result}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      {isImage && (
+                        <div className="verification-card__body">
+                          <div className="veri-row">
+                            <span className="veri-row__key">조회방식</span>
+                            <span className="veri-row__val">
+                              {SEARCH_LABEL[v.type] ?? v.type}
+                            </span>
+                          </div>
+
+                          <div className="veri-row">
+                            <span className="veri-row__key">추출 LOT</span>
+                            <span className="veri-row__val">{v.lotNumber}</span>
+                          </div>
+
+                          <div className="veri-row">
+                            <span className="veri-row__key">결과</span>
+                            <span className="veri-row__val">{v.result}</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
-
-                    {isProduct && (
-                      <div className="verification-card__body">
-                        <div className="veri-row">
-                          <span className="veri-row__key">조회방식</span>
-                          <span className="veri-row__val">
-                            {SEARCH_LABEL[v.type] ?? v.type}
-                          </span>
-                        </div>
-
-                        <div className="veri-row">
-                          <span className="veri-row__key">제품명</span>
-                          <span className="veri-row__val">{v.inputText}</span>
-                        </div>
-
-                        <div className="veri-row">
-                          <span className="veri-row__key">결과</span>
-                          <span className="veri-row__val">{v.result}</span>
-                        </div>
-                      </div>
-                    )}
-
-                    {isLot && (
-                      <div className="verification-card__body">
-                        <div className="veri-row">
-                          <span className="veri-row__key">조회방식</span>
-                          <span className="veri-row__val">
-                            {SEARCH_LABEL[v.type] ?? v.type}
-                          </span>
-                        </div>
-
-                        <div className="veri-row">
-                          <span className="veri-row__key">LOT 번호</span>
-                          <span className="veri-row__val">{v.lotNumber}</span>
-                        </div>
-
-                        <div className="veri-row">
-                          <span className="veri-row__key">결과</span>
-                          <span className="veri-row__val">{v.result}</span>
-                        </div>
-                      </div>
-                    )}
-
-                    {isImage && (
-                      <div className="verification-card__body">
-                        <div className="veri-row">
-                          <span className="veri-row__key">조회방식</span>
-                          <span className="veri-row__val">
-                            {SEARCH_LABEL[v.type] ?? v.type}
-                          </span>
-                        </div>
-
-                        <div className="veri-row">
-                          <span className="veri-row__key">추출 LOT</span>
-                          <span className="veri-row__val">{v.lotNumber}</span>
-                        </div>
-
-                        <div className="veri-row">
-                          <span className="veri-row__key">결과</span>
-                          <span className="veri-row__val">{v.result}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </>
           )}
         </section>
       </main>
