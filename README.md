@@ -7,8 +7,8 @@
 
 Medicine Platform은 의약품 리콜 정보를 쉽고 빠르게 조회할 수 있도록 개발한 개인 프로젝트입니다.
 
-사용자는 제품명, LOT 번호, 의약품 이미지를 이용하여 리콜 여부를 확인할 수 있으며, Google Vision OCR을 통해 LOT 번호를 자동 추출하고,
-OpenAI API를 활용하여 의약품 정보를 요약해 제공합니다.
+사용자는 제품명, LOT 번호, 의약품 이미지를 이용하여 리콜 여부를 확인할 수 있으며, Tesseract OCR을 통해 LOT 번호를 자동 추출하고,
+Gemini API를 활용하여 의약품 정보를 요약해 제공합니다.
 
 ---
 
@@ -16,8 +16,8 @@ OpenAI API를 활용하여 의약품 정보를 요약해 제공합니다.
 
 - 제품명, LOT 번호, 이미지(OCR)를 이용한 의약품 리콜 조회
 - JWT 기반 로그인 및 인증
-- OpenAI API를 활용한 의약품 정보 요약
-- Google Vision OCR을 이용한 LOT 번호 자동 인식
+- Gemini API를 활용한 의약품 정보 요약
+- Tesseract OCR을 이용한 LOT 번호 자동 인식
 - 조회 이력 저장 및 관리
 
 ---
@@ -53,11 +53,11 @@ OpenAI API를 활용하여 의약품 정보를 요약해 제공합니다.
 
 ## AI
 
-- OpenAI API
+- Gemini API
 
 ## OCR
 
-- Google Vision API
+- Tesseract OCR (Tess4J)
 
 ## Version Control
 
@@ -81,7 +81,7 @@ OpenAI API를 활용하여 의약품 정보를 요약해 제공합니다.
         │           │            │
         │           │            │
         ▼           ▼            ▼
-     MySQL      OpenAI API   Google Vision API
+     MySQL       Gemini API    Tesseract OCR
 ```
 
 ---
@@ -149,7 +149,7 @@ backend
 
 ### 이미지 조회
 
-- Google Vision OCR
+- Tesseract OCR
 - LOT 번호 자동 추출
 - 리콜 조회
 
@@ -157,7 +157,7 @@ backend
 
 ## 🤖 AI 기능
 
-- OpenAI API 활용
+- Gemini API 활용
 - 의약품 정보 요약
 - 사용자 친화적인 설명 제공
 
@@ -186,6 +186,8 @@ npm run dev
 
 ## Backend
 
+실행 전 `GEMINI_API_KEY` 환경변수를 설정하고, Tesseract OCR의 `tessdata` 경로를 실행 환경에 맞게 구성해야 합니다.
+
 ```bash
 cd backend
 
@@ -211,8 +213,8 @@ cd backend
 
 - JWT 기반 인증 및 인가
 - Spring Security 적용
-- Google Vision OCR 연동
-- OpenAI API 연동
+- Tesseract OCR 연동
+- Gemini API 연동
 - 조회 이력 저장 및 삭제 기능
 - 프론트엔드 페이지네이션 구현
 
